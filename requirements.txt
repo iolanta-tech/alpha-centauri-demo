@@ -1,0 +1,5 @@
+iolanta==2.1.42
+jeeves-shell[all]==2.3.4
+
+# yaml-ld currently imports an API removed in PyLD 3.
+pyld<3
