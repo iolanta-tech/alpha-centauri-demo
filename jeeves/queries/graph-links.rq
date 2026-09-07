@@ -1,0 +1,7 @@
+SELECT DISTINCT ?subject ?predicate ?object
+WHERE {
+  GRAPH <__GRAPH__> {
+    ?subject ?predicate ?object
+    FILTER(isIRI(?object))
+  }
+}
