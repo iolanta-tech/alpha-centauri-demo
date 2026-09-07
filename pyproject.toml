@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "alpha-centauri-demo"
+version = "0.1.0"
+description = "YAML-LD Dataworthy talk"
+authors = ["Anatoly Scherbakov <altaisoft@gmail.com>"]
+packages = [{include = "jeeves"}]
+
+[tool.poetry.dependencies]
+python = ">=3.12,<4.0"
+jeeves-shell = {version = "2.3.4", extras = ["all"]}
+jinja2 = "*"
+pygments = "*"
+"ruamel.yaml" = "*"
+
+[tool.poetry.group.dev.dependencies]
+jeeves-yeti-pyproject = ">=1.0.3"
+pytest = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
