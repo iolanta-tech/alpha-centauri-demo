@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>YAML-LD: Linked Data for Humans &amp; Agents</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <link rel="stylesheet" href="shower/themes/ribbon/styles/index.css">
+    <link rel="stylesheet" href="styles.css?revision=implementation-links">
+    <style>{{ pygments_css | safe }}</style>
+</head>
+<body class="shower list">
+    <header class="caption">
+        <h1>YAML-LD: Linked Data for Humans &amp; Agents</h1>
+        <p>Dataworthy · 2026</p>
+    </header>
+
+    {% macro byte_metric(row) -%}
+    <p class="metric">
+        <span class="bytes">{{ row.utf8_bytes }} bytes</span>
+        {% if row.saved_byte_percent > 0 -%}
+        <span class="comparison win">{{ row.saved_byte_percent }}% below JSON-LD</span>
+        {%- elif row.saved_byte_percent < 0 -%}
+        <span class="comparison setback">{{ -row.saved_byte_percent }}% above JSON-LD</span>
+        {%- endif %}
+        {% if row.previous_byte_delta is not none -%}
+            {% if row.previous_byte_delta < 0 -%}
+            <span class="comparison win">&minus;{{ -row.previous_byte_delta }} B</span>
+            {%- elif row.previous_byte_delta > 0 -%}
+            <span class="comparison setback">+{{ row.previous_byte_delta }} B</span>
+            {%- endif %}
+        {%- endif %}
+    </p>
+    {%- endmacro %}
+
+    <section class="slide" id="title">
+        <h2>YAML-LD: Linked Data for Humans &amp; Agents</h2>
+        <p class="lede">A trip through the α Centauri system</p>
+        <aside>0–1 min. Title and the promise: same graph, friendlier source.</aside>
+    </section>
+
+    <section class="slide graph-slide" id="graph-slide">
+        <div class="graph-shell">
+            <div id="graph"></div>
+            <div id="graph-labels" class="graph-labels"></div>
+            <div class="orbit-overlay">
+                <p class="orbit-scale-note">Separate scales. Textured planets are magnified, inferred proxies.</p>
+            </div>
+            <div id="graph-details" class="graph-details">Drag to orbit. Scroll to zoom.</div>
+            <p class="graph-toolbar">
+                <button type="button" id="reset-camera">Reset view</button>
+            </p>
+        </div>
+        <script id="graph-data" type="application/json">{{ graph | tojson }}</script>
+        <aside>4–8 min. Meet the system before seeing its RDF representation. The A/B binary has a 23.5 AU semimajor axis. Proxima is currently about 13,000 AU from it. Proxima d and b orbit at 0.02881 AU and 0.04848 AU. Sources: https://www.cambridge.org/core/journals/publications-of-the-astronomical-society-of-australia/article/abs/alpha-centauri/7ED97A40788D66BF0D70B46759E6CA23 and https://exoplanetarchive.ipac.caltech.edu/overview/Proxima%20Centauri%20b and https://science.nasa.gov/exoplanet-catalog/proxima-centauri-d/.</aside>
+    </section>
+
+    <section class="slide code-slide" id="jsonld">
+        <div class="code-frame">
+            <div class="code-info">
+                <h2 class="code-title">The α Centauri RDF graph in JSON-LD <img class="technology-logo jsonld-logo" src="images/logos/json-ld.svg" alt=""></h2>
+                {{ byte_metric(metrics['01-canonical.jsonld']) }}
+            </div>
+            <div class="code-pane">{{ fragments['01-canonical.jsonld'] | safe }}</div>
+        </div>
+        <aside>9–11 min. This document is canonical for every later stage. It records system membership, constellation, and orbital relationships.</aside>
+    </section>
+
+    <section class="slide subset-slide" id="json-subset">
+        <div class="subset-equation">
+            <img class="technology-logo subset-logo" src="images/logos/json.svg" alt="">
+            <h2>JSON ⊂ YAML</h2>
+            <img class="technology-logo subset-logo" src="images/logos/yaml.svg" alt="">
+        </div>
+    </section>
+
+    <section class="slide code-slide" id="jsonld-marked">
+        <div class="code-frame">
+            <div class="code-info">
+                <h2 class="code-title">The α Centauri RDF graph in JSON-LD <img class="technology-logo jsonld-logo" src="images/logos/json-ld.svg" alt=""></h2>
+                {{ byte_metric(metrics['01-canonical.jsonld']) }}
+            </div>
+            <div class="code-pane">{{ fragments['01-canonical-marked.jsonld'] | safe }}</div>
+        </div>
+        <aside>12–14 min. This is the same JSON-LD document. Now point out the highlighted braces, brackets, and commas. @context and the colon still carry structure in YAML.</aside>
+    </section>
+
+    <section class="slide code-slide" id="yaml-plain">
+        <div class="code-frame">
+            <div class="code-info">
+                <h2 class="code-title">YAML-LD <img class="technology-logo yaml-logo" src="images/logos/yaml.svg" alt=""></h2>
+                {{ byte_metric(metrics['02-plain.yamlld']) }}
+            </div>
+            <div class="code-pane">{{ fragments['02-plain.yamlld'] | safe }}</div>
+        </div>
+        <aside>14–16 min. The JSON-only braces, brackets, and commas have disappeared. The YAML-LD expands to the same RDF graph. Count includes the inline context.</aside>
+    </section>
+
+    <section class="slide" id="yaml-ld-specification">
+        <a class="w3c-logo-link" href="https://www.w3.org/" aria-label="World Wide Web Consortium">
+            <img class="technology-logo w3c-logo" src="images/logos/w3c.svg" alt="W3C">
+        </a>
+        <h2>YAML-LD 1.0</h2>
+        <p class="lede">YAML 1.2+ syntax with JSON-LD’s data and processing model</p>
+        <dl class="status">
+            <dt>W3C Working Draft</dt>
+            <dd>26 August 2026</dd>
+            <dt>Recommendation track</dt>
+            <dd>Work in progress</dd>
+        </dl>
+        <aside>16–18 min. YAML-LD 1.0 is a Working Draft on the W3C Recommendation track, published by the JSON-LD Working Group. YAML-LD mandates YAML 1.2 or a later backwards-compatible processor. Source: https://www.w3.org/TR/yaml-ld/.</aside>
+    </section>
+
+    <section class="slide code-slide" id="dollar">
+        <div class="code-frame">
+            <div class="code-info">
+                <h2 class="code-title">@ needs to stay quoted, $ does not</h2>
+                {{ byte_metric(metrics['03-dollar.yamlld']) }}
+            </div>
+            <div class="code-pane">{{ fragments['03-dollar.yamlld'] | safe }}</div>
+        </div>
+        <aside>18–22 min. @ must remain quoted in YAML. The imported dollar-convenience context supplies $id and $type; green marks both their uses and the context that defines them.</aside>
+    </section>
+
+    <section class="slide code-slide" id="unicode">
+        <div class="code-frame">
+            <div class="code-info">
+                <h2 class="code-title">Unicode shenanigans</h2>
+                {{ byte_metric(metrics['04-unicode.yamlld']) }}
+            </div>
+            <div class="code-pane">{{ fragments['04-unicode.yamlld'] | safe }}</div>
+        </div>
+        <aside>22–26 min. ∈ maps to @type in the local context. One Unicode character, three UTF-8 bytes. A convention, not a recommendation.</aside>
+    </section>
+
+    <section class="slide" id="markdown-ld">
+        <h2>Markdown-LD <img class="technology-logo markdown-logo" src="images/logos/markdown.svg" alt=""></h2>
+        <p class="lede">YAML-LD front matter carries the graph. Markdown carries the reader-facing explanation.</p>
+        <div class="code-pane markdown-example"><pre><code>---
+"@context":
+  "@import": https://json-ld.org/contexts/dollar-convenience.jsonld
+  dbr: http://dbpedia.org/resource/
+$id: dbr:Alpha_Centauri
+schema:name: Alpha Centauri
+---
+
+# Alpha Centauri
+
+Alpha Centauri is the closest star system to the Solar System.</code></pre></div>
+        <aside>28–31 min. The front matter expands to the same RDF graph. Do not count the Markdown body against JSON-LD.</aside>
+    </section>
+
+    <section class="slide" id="implementations">
+        <h2>Where implementations stand</h2>
+        <div class="implementation-grid">
+            <section class="implementation">
+                <img class="technology-logo implementation-logo" src="images/logos/rust.svg" alt="">
+                <h3><a href="https://github.com/pchampin/sophia-cli">Sophia / <code>sop</code></a></h3>
+                <p class="implementation-role">CLI</p>
+                <p>YAML-LD format support</p>
+            </section>
+            <section class="implementation">
+                <img class="technology-logo implementation-logo" src="images/logos/rust.svg" alt="">
+                <h3><a href="https://github.com/iolanta-tech/sparqld">sparqld</a></h3>
+                <p class="implementation-role">Loader</p>
+                <p>YAML-LD + Markdown-LD</p>
+            </section>
+            <section class="implementation">
+                <img class="technology-logo implementation-logo" src="images/logos/python.svg" alt="">
+                <h3><a href="https://github.com/digitalbazaar/pyld">PyLD</a></h3>
+                <p class="implementation-role">In development</p>
+                <p>YAML-LD</p>
+            </section>
+            <section class="implementation">
+                <img class="technology-logo implementation-logo" src="images/logos/javascript.svg" alt="">
+                <h3><a href="https://json-ld.org/playground/">json-ld.org Playground</a></h3>
+                <p class="implementation-role">Browser</p>
+                <p>YAML-LD export</p>
+            </section>
+        </div>
+        <aside>35–39 min. Sophia and sparqld use Rust. PyLD is Python. The json-ld.org Playground produces YAML-LD by serializing its JSON-LD document with YAML.stringify. The Playground evidence demonstrates export, not YAML-LD input processing by jsonld.js itself.</aside>
+    </section>
+
+    <section class="slide black clear memoriam-slide" id="memoriam">
+        <div class="memoriam-copy">
+            <h2>In memoriam</h2>
+            <p class="memoriam-name">Gregg Kellogg</p>
+            <p class="memoriam-years">1957–2025</p>
+            <p class="lede">JSON-LD and YAML-LD rest on work Gregg Kellogg made possible. This talk proceeds from that foundation.</p>
+        </div>
+        <figure class="memoriam-portrait">
+            <img src="images/gregg-kellogg.jpg" alt="Portrait of Gregg Kellogg">
+        </figure>
+        <aside>Do not rush this slide. Portrait source: https://greggkellogg.net/foaf, retrieved 2026-09-07.</aside>
+    </section>
+
+    <section class="slide" id="questions">
+        <h2 class="shout">Questions?</h2>
+    </section>
+
+    <div class="progress"></div>
+    <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+    <script src="shower/shower.js"></script>
+    <script type="module" src="talk.js"></script>
+</body>
+</html>
