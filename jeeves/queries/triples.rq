@@ -1,0 +1,6 @@
+SELECT ?subject ?predicate ?object
+WHERE {
+  GRAPH <__GRAPH__> {
+    ?subject ?predicate ?object
+  }
+}
