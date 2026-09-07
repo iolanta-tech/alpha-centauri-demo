@@ -1,0 +1,14 @@
+PREFIX schema: <https://schema.org/>
+SELECT DISTINCT ?id ?name ?type ?hasPart
+WHERE {
+  GRAPH <__GRAPH__> {
+    { ?id ?p ?o } UNION { ?s ?p ?id }
+    FILTER(isIRI(?id))
+    ?id schema:name ?name
+    OPTIONAL { ?id a ?type }
+    OPTIONAL {
+      ?id schema:hasPart ?part
+      BIND("true" AS ?hasPart)
+    }
+  }
+}
