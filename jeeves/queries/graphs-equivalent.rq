@@ -1,0 +1,10 @@
+ASK {
+  FILTER NOT EXISTS {
+    GRAPH <__CANONICAL__> { ?s ?p ?o }
+    MINUS { GRAPH <__OTHER__> { ?s ?p ?o } }
+  }
+  FILTER NOT EXISTS {
+    GRAPH <__OTHER__> { ?s ?p ?o }
+    MINUS { GRAPH <__CANONICAL__> { ?s ?p ?o } }
+  }
+}
