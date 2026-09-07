@@ -1,0 +1,3 @@
+[submodule "yaml-ld"]
+	path = yaml-ld
+	url = https://github.com/w3c/yaml-ld.git
