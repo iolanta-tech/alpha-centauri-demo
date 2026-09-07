@@ -1,0 +1,28 @@
+PREFIX metric: <urn:alpha-centauri-demo:metric:>
+
+SELECT
+  ?position
+  ?sourceFile
+  ?characters
+  ?utf8Bytes
+  ?savedCharacters
+  ?savedPercent
+  ?savedBytes
+  ?savedBytePercent
+  ?previousByteDelta
+WHERE {
+  GRAPH ?graph {
+    <urn:alpha-centauri-demo:metrics> metric:stage ?stage .
+    ?stage
+      metric:position ?position ;
+      metric:sourceFile ?sourceFile ;
+      metric:characters ?characters ;
+      metric:utf8Bytes ?utf8Bytes ;
+      metric:savedCharacters ?savedCharacters ;
+      metric:savedPercent ?savedPercent ;
+      metric:savedBytes ?savedBytes ;
+      metric:savedBytePercent ?savedBytePercent .
+    OPTIONAL { ?stage metric:previousByteDelta ?previousByteDelta }
+  }
+}
+ORDER BY ?position
