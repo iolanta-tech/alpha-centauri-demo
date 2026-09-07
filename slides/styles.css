@@ -1,0 +1,431 @@
+.shower {
+    --slide-ratio: calc(16 / 9);
+    font-family: "PT Sans", "DejaVu Sans", sans-serif;
+}
+
+aside {
+    display: none;
+}
+
+.slide h2 {
+    font-size: 42px;
+}
+
+.technology-logo {
+    display: inline-block;
+    object-fit: contain;
+}
+
+.slide .lede {
+    font-size: 28px;
+    line-height: 1.35;
+}
+
+.slide.code-slide .metric {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 5px 9px;
+    border: 1px solid #ccc;
+    background: rgb(255 255 255 / 92%);
+    color: #585a5e;
+    font-size: 16px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.metric .bytes {
+    color: #585a5e;
+    font-weight: bold;
+}
+
+.metric .comparison {
+    margin-left: 8px;
+    padding-left: 8px;
+    border-left: 1px solid #ccc;
+}
+
+.metric .win {
+    color: #137333;
+}
+
+.metric .setback {
+    color: #b42318;
+}
+
+.slide .code-pane {
+    overflow: auto;
+    font-size: 14px;
+    line-height: 1.35;
+}
+
+.slide .code-pane pre {
+    margin: 0;
+    font-family: "PT Mono", "DejaVu Sans Mono", monospace;
+}
+
+.slide.code-slide {
+    padding: 0 !important;
+}
+
+.slide.code-slide .code-frame {
+    position: absolute;
+    inset: 22px 40px 18px;
+}
+
+.slide.code-slide .code-title {
+    position: static;
+    margin: 0;
+    color: #454c56;
+    font-size: 42px;
+    line-height: 1.1;
+    text-align: right;
+}
+
+.slide.code-slide .code-title .technology-logo {
+    width: 34px;
+    height: 34px;
+    margin-left: 10px;
+    vertical-align: -0.15em;
+}
+
+.slide.code-slide .code-info {
+    position: absolute;
+    right: 60px;
+    bottom: 34px;
+    z-index: 2;
+    width: 430px;
+}
+
+.slide.code-slide .code-info .metric {
+    position: static;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    margin: 8px 0 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    white-space: normal;
+}
+
+.slide.code-slide .code-pane {
+    box-sizing: border-box;
+    height: 100%;
+    max-height: none;
+    padding: 16px 460px 16px 20px;
+    background: #f8f8f8;
+}
+
+.slide.subset-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#json-subset {
+    padding: 0 !important;
+}
+
+.slide.subset-slide .subset-equation {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.slide.subset-slide h2 {
+    margin: 0;
+    color: #253858;
+    font-size: 84px;
+    line-height: 1;
+}
+
+#json-subset .subset-logo {
+    width: 74px;
+    height: 74px;
+}
+
+#jsonld-marked .json-only-punctuation {
+    display: inline-block;
+    min-width: 0.7em;
+    border-radius: 2px;
+    background: #ffe2e0;
+    box-shadow: inset 0 -2px #d33d31;
+    color: #9d2018;
+    font-weight: bold;
+    text-align: center;
+}
+
+#dollar .dollar-convenience {
+    border-radius: 2px;
+    background: #e2f1e8;
+    color: #137333;
+    font-weight: bold;
+}
+
+#yaml-ld-specification {
+    position: relative;
+}
+
+#yaml-ld-specification .w3c-logo-link {
+    position: absolute;
+    right: 76px;
+    bottom: 56px;
+}
+
+#yaml-ld-specification .w3c-logo {
+    display: block;
+    width: 104px;
+    height: 70px;
+}
+
+#markdown-ld .markdown-logo {
+    width: 36px;
+    height: 36px;
+    margin-left: 8px;
+    vertical-align: -0.16em;
+}
+
+.slide .markdown-example {
+    max-height: 300px;
+    overflow: hidden;
+}
+
+#graph-slide {
+    padding: 0 !important;
+    background: #05070d !important;
+    overflow: hidden !important;
+}
+
+#graph-slide .graph-shell {
+    position: absolute !important;
+    inset: 0;
+    width: auto !important;
+    height: auto !important;
+    background: #05070d;
+    overflow: hidden;
+}
+
+#graph-slide #graph {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.graph-labels {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+/* Shower clones active-slide content for its live region. A cloned WebGL graph
+   would leave a second, static set of labels visible to sighted viewers. */
+.region .graph-shell {
+    display: none;
+}
+
+.graph-label {
+    position: absolute;
+    transform: translate(var(--label-offset-x, -50%), var(--label-offset-y, -120%));
+    color: #fff;
+    font-size: 17px;
+    font-weight: bold;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px #101418;
+}
+
+.graph-details {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    max-width: 360px;
+    padding: 10px 12px;
+    background: rgba(16, 20, 24, 0.88);
+    color: #fff;
+    font-size: 16px;
+}
+
+.graph-toolbar {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    z-index: 1;
+    margin: 0;
+}
+
+.graph-toolbar button {
+    font-size: 18px;
+}
+
+#graph-slide .orbit-overlay {
+    position: absolute !important;
+    top: 28px;
+    left: 34px;
+    z-index: 3;
+    max-width: 720px;
+    padding: 16px 20px 15px;
+    border: 1px solid rgb(191 209 235 / 22%);
+    border-radius: 8px;
+    background: rgb(5 7 13 / 78%);
+    box-shadow: 0 8px 22px rgb(0 0 0 / 28%);
+    backdrop-filter: blur(9px);
+}
+
+#graph-slide .orbit-scale-note {
+    display: block !important;
+    position: static !important;
+    max-width: none;
+    margin: 8px 0 0;
+    color: #d9e3f2;
+    font-size: 16px;
+    line-height: 1.25;
+}
+
+#graph-slide .graph-details,
+#graph-slide .graph-toolbar {
+    z-index: 3;
+}
+
+.legend {
+    display: flex;
+    gap: 18px;
+    font-size: 18px;
+    margin: 0 0 8px;
+}
+
+.legend span::before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.legend .system::before { background: #6c63ff; }
+.legend .star::before { background: #f5c542; }
+.legend .planet::before { background: #4ecdc4; }
+.legend .other::before { background: #9aa0a6; }
+
+.status dt {
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+#implementations .implementation-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 52px;
+}
+
+#implementations .implementation {
+    min-width: 0;
+    padding: 0 22px;
+}
+
+#implementations .implementation + .implementation {
+    border-left: 1px solid #d4d8df;
+}
+
+#implementations .implementation:first-child {
+    padding-left: 0;
+}
+
+#implementations .implementation:last-child {
+    padding-right: 0;
+}
+
+#implementations .implementation-logo {
+    width: 52px;
+    height: 52px;
+}
+
+#implementations .implementation h3 {
+    margin: 14px 0 8px;
+    color: #222;
+    font-size: 27px;
+    line-height: 1.08;
+    overflow-wrap: anywhere;
+}
+
+#implementations .implementation h3 a {
+    color: inherit;
+    text-decoration-color: #7b8797;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+}
+
+#implementations .implementation-role {
+    margin: 0 0 12px;
+    color: #585a5e;
+    font-size: 17px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#implementations .implementation > p:last-child {
+    margin: 0;
+    font-size: 21px;
+    line-height: 1.25;
+}
+
+.status dd {
+    margin: 0 0 0 1em;
+    font-size: 21px;
+    line-height: 1.2;
+}
+
+.status {
+    margin: 0;
+}
+
+.slide.memoriam-slide {
+    display: flex;
+    align-items: center;
+    gap: 72px;
+    padding: 70px 100px;
+    background: #050505;
+    color: #fff;
+}
+
+.memoriam-copy {
+    max-width: 520px;
+}
+
+.slide.memoriam-slide h2 {
+    margin: 0 0 18px;
+    color: #fff;
+    font-size: 48px;
+}
+
+.slide .memoriam-name {
+    margin: 0;
+    color: #fff;
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.slide .memoriam-years {
+    margin: 4px 0 24px;
+    color: #d7d7d7;
+    font-size: 25px;
+}
+
+.slide.memoriam-slide .lede {
+    margin: 0;
+    color: #f0f0f0;
+}
+
+.memoriam-portrait {
+    flex: 0 0 280px;
+    margin: 0;
+}
+
+.memoriam-portrait img {
+    display: block;
+    width: 280px;
+    height: 280px;
+    object-fit: cover;
+    border: 1px solid #555;
+}
