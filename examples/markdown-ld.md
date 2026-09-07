@@ -1,0 +1,50 @@
+---
+"@context":
+  "@import": https://json-ld.org/contexts/dollar-convenience.jsonld
+  schema: https://schema.org/
+  dbo: http://dbpedia.org/ontology/
+  dbp: http://dbpedia.org/property/
+  dbr: http://dbpedia.org/resource/
+  description: schema:description
+  constellation:
+    "@id": dbo:constellation
+    "@type": "@id"
+  contains:
+    "@id": schema:hasPart
+    "@type": "@id"
+  is-orbited-by:
+    "@reverse": dbp:star
+$id: dbr:Alpha_Centauri
+schema:name: Alpha Centauri
+description: The closest star system to the Solar System.
+constellation:
+  $id: dbr:Centaurus
+  schema:name: Centaurus
+contains:
+  - $id: dbr:Alpha_Centauri_AB
+    schema:name: Alpha Centauri AB
+    contains:
+      - $id: dbr:Alpha_Centauri_A
+        $type: dbo:Star
+        schema:name: Alpha Centauri A
+      - $id: dbr:Alpha_Centauri_B
+        $type: dbo:Star
+        schema:name: Alpha Centauri B
+    is-orbited-by:
+      - $id: dbr:Proxima_Centauri
+        $type: dbo:Star
+        schema:name: Proxima Centauri
+        is-orbited-by:
+          - $id: dbr:Proxima_Centauri_b
+            $type: dbo:Planet
+            schema:name: Proxima Centauri b
+          - $id: dbr:Proxima_Centauri_d
+            $type: dbo:Planet
+            schema:name: Proxima Centauri d
+---
+
+# Alpha Centauri
+
+Alpha Centauri is the closest star system to the Solar System. Its YAML-LD
+front matter is the same graph shown throughout this talk; the Markdown body
+is the reader-facing explanation.
