@@ -2,13 +2,14 @@ import {
     ALPHA_CENTAURI_AB,
     PROXIMA_CENTAURI,
     PROXIMA_PLANETS,
-    SURFACE_RENDER_UNITS_PER_AU,
-    surfaceGeometry,
+    WORLD_UNITS_PER_AU,
+    planetRadiusAu,
 } from "./config.mjs";
+import { keplerRadius } from "./orbit-path.mjs";
 
-export const EYE_HEIGHT = 1.7;
-const STAR_ELEVATION = (6 * Math.PI) / 180;
 const SOLAR_RADIUS_AU = 0.00465047;
+const GLOBE_STANDOFF_RADII = 6;
+const GLOBE_SIBLING_YAW = Math.PI / 6;
 
 function add(a, b) {
     return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
@@ -31,12 +32,18 @@ function normalize(vector) {
     return scale(vector, 1 / length);
 }
 
+function rotateY(vector, angle) {
+    const cosine = Math.cos(angle);
+    const sine = Math.sin(angle);
+    return [vector[0] * cosine + vector[2] * sine, vector[1], -vector[0] * sine + vector[2] * cosine];
+}
+
 function cross(a, b) {
     return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
 }
 
 function au(distanceAu) {
-    return distanceAu * SURFACE_RENDER_UNITS_PER_AU;
+    return distanceAu * WORLD_UNITS_PER_AU;
 }
 
 export function binaryOrbitRadii() {
@@ -63,15 +70,16 @@ export function binaryFrame() {
         binormal,
         radiusA: au(radii.a),
         radiusB: au(radii.b),
+        eccentricity: ALPHA_CENTAURI_AB.eccentricity,
     };
 }
 
-export function setBinaryPhase(phase) {
+export function setBinaryPhase(trueAnomaly) {
     const { barycenter: bary, tangent, binormal, radiusA, radiusB } = binaryFrame();
-    const cosine = Math.cos(phase);
-    const sine = Math.sin(phase);
-    BODIES["alpha-cen-a"].position = add(bary, add(scale(tangent, cosine * radiusA), scale(binormal, sine * radiusA)));
-    BODIES["alpha-cen-b"].position = add(bary, add(scale(tangent, -cosine * radiusB), scale(binormal, -sine * radiusB)));
+    const { eccentricity } = ALPHA_CENTAURI_AB;
+    const direction = add(scale(tangent, Math.cos(trueAnomaly)), scale(binormal, Math.sin(trueAnomaly)));
+    BODIES["alpha-cen-a"].position = add(bary, scale(direction, keplerRadius(radiusA, eccentricity, trueAnomaly)));
+    BODIES["alpha-cen-b"].position = add(bary, scale(direction, -keplerRadius(radiusB, eccentricity, trueAnomaly)));
 }
 
 function planetPosition(id, trueAnomalyRadians) {
@@ -92,13 +100,13 @@ const BODIES = {
         id: "proxima-b",
         kind: "planet",
         position: planetPosition("proxima-b", 0),
-        radius: surfaceGeometry("proxima-b").planetRadius,
+        radius: au(planetRadiusAu("proxima-b")),
     },
     "proxima-d": {
         id: "proxima-d",
         kind: "planet",
         position: planetPosition("proxima-d", Math.PI / 2),
-        radius: surfaceGeometry("proxima-d").planetRadius,
+        radius: au(planetRadiusAu("proxima-d")),
     },
     "alpha-cen-a": {
         id: "alpha-cen-a",
@@ -114,7 +122,7 @@ const BODIES = {
     },
 };
 
-setBinaryPhase(0);
+setBinaryPhase(Math.acos(-ALPHA_CENTAURI_AB.eccentricity));
 
 export function body(id) {
     const found = BODIES[id];
@@ -136,48 +144,33 @@ export function binaryAngularSeparation(observer) {
     return Math.acos(Math.min(1, Math.max(-1, toA[0] * toB[0] + toA[1] * toB[1] + toA[2] * toB[2])));
 }
 
-export function landingNormal(planetId) {
-    const planet = body(planetId);
-    const range = hypot3(planet.position);
-    const inward = normalize(scale(planet.position, -1));
-    const pole = [0, 1, 0];
-    const limb = planet.radius + EYE_HEIGHT;
-    const sine = Math.sin(STAR_ELEVATION);
-    let theta = STAR_ELEVATION;
-    for (let step = 0; step < 12; step += 1) {
-        const normal = add(scale(inward, Math.sin(theta)), scale(pole, Math.cos(theta)));
-        const distance = hypot3(add(planet.position, scale(normal, limb)));
-        theta += (sine * distance - (range * Math.sin(theta) - limb)) / (range * Math.cos(theta));
-    }
-    return add(scale(inward, Math.sin(theta)), scale(pole, Math.cos(theta)));
-}
-
-export function landingPose(planetId) {
-    const planet = body(planetId);
-    const normal = landingNormal(planetId);
-    const height = planet.radius + EYE_HEIGHT;
-    const position = add(planet.position, scale(normal, height));
-    return {
-        id: planetId,
-        center: planet.position,
-        normal,
-        position,
-        target: add(position, scale(normalize(sub([0, 0, 0], position)), 1)),
-    };
-}
-
 export function barycenter() {
     return BINARY.barycenter;
 }
 
 export function standoffPose(id) {
+    if (id === "proxima-b" || id === "proxima-d") {
+        const planet = body(id);
+        const outward = normalize(planet.position);
+        let offset = normalize(add(outward, [0, 0.35, 0]));
+        if (id === "proxima-d") {
+            const toOther = normalize(sub(body("proxima-b").position, planet.position));
+            const yaw = -Math.sign(cross(outward, toOther)[1] || 1) * GLOBE_SIBLING_YAW;
+            offset = rotateY(offset, yaw);
+        }
+        return {
+            id,
+            position: add(planet.position, scale(offset, planet.radius * GLOBE_STANDOFF_RADII)),
+            target: planet.position.slice(),
+        };
+    }
     if (id === "proxima-space") {
         const position = [au(0.12), au(0.04), au(0.08)];
         return { id, position, target: [0, 0, 0] };
     }
     if (id === "binary") {
         const { barycenter: bary, normal, tangent } = binaryFrame();
-        const position = add(bary, add(scale(normal, au(26)), scale(tangent, au(8))));
+        const position = add(bary, add(scale(normal, au(38)), scale(tangent, au(8))));
         return { id, position, target: bary.slice() };
     }
     if (id === "alpha-cen-a" || id === "alpha-cen-b") {
@@ -189,7 +182,6 @@ export function standoffPose(id) {
 }
 
 export function destinationPose(id) {
-    if (id === "proxima-b" || id === "proxima-d") return landingPose(id);
     return standoffPose(id);
 }
 
