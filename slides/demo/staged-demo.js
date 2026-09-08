@@ -1,11 +1,35 @@
 import * as THREE from "three";
 import { CSS2DObject, CSS2DRenderer } from "../vendor/CSS2DRenderer.js";
 import { OrbitControls } from "../vendor/OrbitControls.js";
-import { ALPHA_CENTAURI_AB, PROXIMA_PLANETS, STAGE_BY_ID, STAGE_BY_KEY, STAGES, SURFACE_RENDER_UNITS_PER_AU, planetCaption, surfaceGeometry } from "./config.mjs";
+import { PROXIMA_PLANETS, STAGE_BY_ID, STAGE_BY_KEY, destinationCaption } from "./config.mjs";
+import { createFlight } from "./flight-path.mjs";
+import { farProxy, selectLod } from "./lod.mjs";
+import { walkPointerDown, walkPointerUp } from "./pointer-policy.mjs";
 import { createTerrain } from "./terrain.js";
+import {
+    EYE_HEIGHT,
+    add,
+    au,
+    barycenter,
+    binaryFrame,
+    bodies,
+    body,
+    destinationPose,
+    hypot3,
+    landingPose,
+    normalize,
+    scale,
+    sub,
+} from "./world-model.mjs";
 
 const SPACE = 0x05070d;
-const SKY_MARKER_DISTANCE = 80_000_000;
+const DESTINATIONS = {
+    proxima: "proxima-space",
+    "proxima-b": "proxima-b",
+    "proxima-d": "proxima-d",
+    "alpha-cen-a": "binary",
+    "alpha-cen-b": "binary",
+};
 
 const SURFACE_CONTROLS = `
     <span class="control-item"><span class="control-gesture">drag</span> look</span>
@@ -26,52 +50,53 @@ const ORBIT_CONTROLS = `
     <span class="control-item"><kbd>4</kbd> A/B</span>
     <span class="control-item"><kbd>R</kbd> reset</span>`;
 
-function orbit(radiusX, radiusZ, color = 0x506c8c) {
-    const points = [];
-    for (let index = 0; index <= 96; index += 1) {
-        const angle = (index / 96) * Math.PI * 2;
-        points.push(new THREE.Vector3(Math.cos(angle) * radiusX, 0, Math.sin(angle) * radiusZ));
-    }
-    return new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.72 }));
+function toVec(vector, array) {
+    return vector.set(array[0], array[1], array[2]);
 }
 
-function star(radius, color) {
-    return new THREE.Mesh(new THREE.SphereGeometry(radius, 28, 20), new THREE.MeshBasicMaterial({ color }));
+function resolveDestination(destination) {
+    return typeof destination === "function" ? destination() : destination;
 }
 
-function label(text, destination, onSelect) {
+function labelButton(text, destination, onSelect) {
     const element = document.createElement("button");
     element.type = "button";
+    element.tabIndex = -1;
     element.className = "scene-label";
     element.textContent = text;
     element.addEventListener("click", (event) => {
         event.stopPropagation();
-        if (destination) onSelect(destination);
+        const next = resolveDestination(destination);
+        if (next) onSelect(next);
     });
     const object = new CSS2DObject(element);
     object.center.set(0.5, 1);
     return object;
 }
 
-function starDisc(text, destination, onSelect) {
+function staticLabel(text) {
+    const element = document.createElement("span");
+    element.className = "scene-label scene-label-static";
+    element.textContent = text;
+    const object = new CSS2DObject(element);
+    object.center.set(0.5, 1);
+    return object;
+}
+
+function starDisc(text, destination, onSelect, className = "") {
     const element = document.createElement("button");
     element.type = "button";
-    element.className = "scene-star-disc";
+    element.tabIndex = -1;
+    element.className = className ? `scene-star-disc ${className}` : "scene-star-disc";
     element.setAttribute("aria-label", text);
     element.addEventListener("click", (event) => {
         event.stopPropagation();
-        onSelect(destination);
+        const next = resolveDestination(destination);
+        if (next) onSelect(next);
     });
     const object = new CSS2DObject(element);
     object.center.set(0.5, 0.5);
     return object;
-}
-
-function destinationMesh(geometry, material, destination, select) {
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.userData.destination = destination;
-    mesh.userData.select = select;
-    return mesh;
 }
 
 function disposeObject(object) {
@@ -82,35 +107,40 @@ function disposeObject(object) {
     });
 }
 
+function orbitLine(radius, color = 0x506c8c, opacity = 0.45) {
+    const points = [];
+    for (let index = 0; index <= 96; index += 1) {
+        const angle = (index / 96) * Math.PI * 2;
+        points.push(new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius));
+    }
+    return new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color, transparent: true, opacity }));
+}
+
 export class StagedDemo {
     constructor(shell) {
         this.shell = shell;
         this.mount = shell.querySelector("#graph");
-        this.fade = shell.querySelector("#scene-fade");
         this.note = shell.querySelector("#scene-note");
         this.help = shell.querySelector("#scene-help");
-        this.stage = null;
-        this.groups = new Map();
-        this.rayTargets = new Map();
         this.keys = new Set();
         this.frame = null;
-        this.lastFrame = performance.now();
-        this.transitioning = false;
         this.flight = null;
+        this.flightProgress = 0;
         this.running = false;
         this.surfaceDrag = null;
         this.surfaceNavigation = null;
         this.walkForward = new THREE.Vector3();
         this.walkRight = new THREE.Vector3();
+        this.scratch = new THREE.Vector3();
+        this.upWorld = [0, 1, 0];
 
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(SPACE);
-        this.scene.fog = new THREE.FogExp2(SPACE, 0.008);
-        this.camera = new THREE.PerspectiveCamera(58, 1, 0.005, 130_000_000);
+        this.camera = new THREE.PerspectiveCamera(58, 1, 0.05, 1e9);
         this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance", logarithmicDepthBuffer: true });
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
         this.renderer.domElement.setAttribute("aria-label", "Interactive journey through the Alpha Centauri system");
-        this.renderer.domElement.tabIndex = 0;
+        this.renderer.domElement.tabIndex = -1;
         this.mount.replaceChildren(this.renderer.domElement);
 
         this.labels = new CSS2DRenderer();
@@ -121,12 +151,12 @@ export class StagedDemo {
         this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
         this.orbitControls.enableDamping = true;
         this.orbitControls.enablePan = false;
-        this.orbitControls.minDistance = 7;
-        this.orbitControls.maxDistance = 70;
         this.camera.rotation.order = "YXZ";
 
-        this.addSharedLight();
-        this.createStages();
+        this.views = new Map();
+        this.clickables = [];
+        this.addLights();
+        this.createWorld();
         this.onResize = this.resize.bind(this);
         this.onKeyDown = this.keyDown.bind(this);
         this.onKeyUp = (event) => this.keys.delete(event.key.toLowerCase());
@@ -145,294 +175,322 @@ export class StagedDemo {
         this.renderer.domElement.addEventListener("pointercancel", this.onSurfacePointerEnd);
         this.renderer.domElement.addEventListener("lostpointercapture", this.onSurfacePointerEnd);
         this.resize();
+        this.pruneLiveRegion();
         this.goTo("proxima-b", { immediate: true });
         window.__alphaCentauriDemo = {
             goTo: (stage, options) => this.goTo(stage, options),
-            currentStage: () => this.stage?.id,
-            cameraPosition: () => this.camera.position.toArray(),
+            currentDestination: () => this.destination,
+            currentStage: () => this.destination,
+            cameraWorld: () => this.cameraWorld.slice(),
+            lookWorld: () => this.lookWorld.slice(),
+            cameraPosition: () => this.cameraWorld.slice(),
+            flightProgress: () => this.flightProgress,
         };
     }
 
-    addSharedLight() {
-        this.scene.add(new THREE.HemisphereLight(0xa8a0ab, 0x302832, 1.45));
+    addLights() {
+        this.scene.add(new THREE.HemisphereLight(0xa8a0ab, 0x302832, 1.15));
+        this.starlight = new THREE.DirectionalLight(0xff8a69, 1.35);
+        this.scene.add(this.starlight);
     }
 
-    addLabel(parent, position, text, destination) {
-        const marker = label(text, destination, (next) => this.goTo(next));
-        marker.position.copy(position);
-        parent.add(marker);
-        return marker;
+    createWorld() {
+        for (const item of bodies()) {
+            const root = new THREE.Group();
+            const mesh = this.createBodyMesh(item);
+            mesh.userData.destination = DESTINATIONS[item.id];
+            mesh.userData.select = (next) => this.goTo(next);
+            root.add(mesh);
+            const view = { id: item.id, kind: item.kind, root, mesh, lod: null };
+            if (item.kind === "planet") {
+                const terrain = createTerrain({ ...PROXIMA_PLANETS[item.id].surface, planetRadius: item.radius });
+                root.add(terrain.group);
+                view.terrain = terrain;
+            }
+            if (item.id === "proxima") {
+                view.disc = starDisc("Proxima Centauri", "proxima-space", (next) => this.goTo(next));
+                root.add(view.disc);
+                view.label = labelButton("Proxima Centauri", "proxima-space", (next) => this.goTo(next));
+            } else if (item.id === "proxima-b") {
+                view.label = labelButton("Proxima b", "proxima-b", (next) => this.goTo(next));
+            } else if (item.id === "proxima-d") {
+                view.label = labelButton("Proxima d", "proxima-d", (next) => this.goTo(next));
+            } else if (item.id === "alpha-cen-a") {
+                view.disc = starDisc("α Cen A", () => this.pairDestination("alpha-cen-a"), (next) => this.goTo(next), "star-a");
+                root.add(view.disc);
+                view.label = labelButton("α Centauri A/B", () => this.pairDestination("alpha-cen-a"), (next) => this.goTo(next));
+            } else if (item.id === "alpha-cen-b") {
+                view.disc = starDisc("α Cen B", () => this.pairDestination("alpha-cen-b"), (next) => this.goTo(next), "star-b");
+                root.add(view.disc);
+                view.label = labelButton("α Cen B", () => this.pairDestination("alpha-cen-b"), (next) => this.goTo(next));
+            }
+            if (view.label) root.add(view.label);
+            this.scene.add(root);
+            this.views.set(item.id, view);
+            this.clickables.push(mesh);
+        }
+        this.orbits = new THREE.Group();
+        this.orbits.add(orbitLine(hypot3(body("proxima-d").position)), orbitLine(hypot3(body("proxima-b").position)));
+        this.scene.add(this.orbits);
+        const frame = binaryFrame();
+        this.binaryOrbits = new THREE.Group();
+        this.binaryOrbits.add(orbitLine(frame.radiusA, 0xb7cce6, 0.8), orbitLine(frame.radiusB, 0xb7cce6, 0.8));
+        this.binaryOrbits.add(new THREE.Mesh(new THREE.SphereGeometry(au(0.2), 12, 10), new THREE.MeshBasicMaterial({ color: 0xe8f0fa })));
+        const baryLabel = staticLabel("Centre of Mass");
+        baryLabel.position.set(0, au(0.45), 0);
+        this.binaryOrbits.add(baryLabel);
+        this.binaryOrbits.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(...frame.normal));
+        this.scene.add(this.binaryOrbits);
     }
 
-    addStarDisc(parent, position, surface) {
-        const marker = starDisc("Proxima Centauri", "proxima-space", (next) => this.goTo(next));
-        marker.position.copy(position);
-        marker.userData.angularDiameter = 2 * Math.atan(surface.starRadius / surface.starDistance);
-        parent.add(marker);
-        return marker;
+    viewingPair() {
+        const id = this.flight?.destinationId ?? this.destination;
+        return id === "binary" || id === "alpha-cen-a" || id === "alpha-cen-b";
     }
 
-    addDistantBinary(parent, targets) {
-        const midpoint = new THREE.Vector3(...ALPHA_CENTAURI_AB.skyDirection).normalize().multiplyScalar(SKY_MARKER_DISTANCE);
-        const tangent = new THREE.Vector3(0, 1, 0).cross(midpoint).normalize();
-        const halfSeparation = Math.atan(ALPHA_CENTAURI_AB.relativeSemimajorAxisAu / ALPHA_CENTAURI_AB.separationFromProximaAu) / 2;
-        const offset = tangent.multiplyScalar(SKY_MARKER_DISTANCE * Math.sin(halfSeparation));
-        const points = new THREE.Points(
-            new THREE.BufferGeometry().setFromPoints([midpoint.clone().add(offset), midpoint.clone().sub(offset)]),
-            new THREE.PointsMaterial({ color: 0xffe5ab, size: 2.5, sizeAttenuation: false }),
-        );
-        points.userData.destination = "binary";
-        points.userData.select = (next) => this.goTo(next);
-        parent.add(points);
-        targets.push(points);
-        this.addLabel(parent, midpoint, "α Centauri A/B · 13,000 AU", "binary");
+    pairDestination(starId) {
+        return this.viewingPair() ? starId : "binary";
     }
 
-    createStages() {
-        this.createSurface("proxima-b", "Proxima b", "proxima-d", "Proxima d", PROXIMA_PLANETS["proxima-b"].surface);
-        this.createSurface("proxima-d", "Proxima d", "proxima-b", "Proxima b", PROXIMA_PLANETS["proxima-d"].surface);
-        this.createProximaSpace();
-        this.createBinary();
+    createBodyMesh(item) {
+        if (item.id === "proxima-b") {
+            const texture = new THREE.TextureLoader().load("images/proxima-b-texture.png");
+            texture.colorSpace = THREE.SRGBColorSpace;
+            return new THREE.Mesh(new THREE.SphereGeometry(item.radius, 32, 22), new THREE.MeshStandardMaterial({ map: texture, color: 0x849aac, roughness: 0.9 }));
+        }
+        if (item.id === "proxima-d") {
+            const texture = new THREE.TextureLoader().load("images/proxima-d-texture.png");
+            texture.colorSpace = THREE.SRGBColorSpace;
+            return new THREE.Mesh(new THREE.SphereGeometry(item.radius, 32, 22), new THREE.MeshStandardMaterial({ map: texture, color: 0xb48661, roughness: 0.9 }));
+        }
+        const color = item.id === "proxima" ? 0xff7156 : item.id === "alpha-cen-a" ? 0xffedbd : 0xffba7c;
+        return new THREE.Mesh(new THREE.SphereGeometry(item.radius, 28, 20), new THREE.MeshBasicMaterial({ color }));
     }
 
-    registerStage(id, group, targets) {
-        group.visible = false;
-        this.groups.set(id, group);
-        this.rayTargets.set(id, targets);
-        this.scene.add(group);
-    }
-
-    createSurface(id, bodyName, otherId, otherName, terrainOptions) {
-        const group = new THREE.Group();
-        const targets = [];
-        const surface = surfaceGeometry(id);
-        const otherSurface = surfaceGeometry(otherId);
-        const terrain = createTerrain({ ...terrainOptions, planetRadius: surface.planetRadius });
-        terrain.group.position.y = -surface.planetRadius;
-        group.add(terrain.group);
-        group.userData.heightAt = terrain.heightAt;
-        group.userData.updatePatch = terrain.updatePatch;
-        group.userData.surface = surface;
-        const sun = destinationMesh(new THREE.CircleGeometry(surface.starRadius, 48), new THREE.MeshBasicMaterial({ color: 0xff7657, side: THREE.DoubleSide }), "proxima-space", (next) => this.goTo(next));
-        sun.frustumCulled = false;
-        sun.position.set(
-            0,
-            -surface.planetRadius + surface.starDistance * Math.sin(surface.starElevationRadians),
-            -surface.starDistance * Math.cos(surface.starElevationRadians),
-        );
-        const starlight = new THREE.DirectionalLight(0xff8a69, 1.35);
-        starlight.position.copy(sun.position);
-        starlight.target.position.set(0, 0, 0);
-        group.add(sun, starlight, starlight.target);
-        targets.push(sun);
-        this.addStarDisc(group, sun.position, surface);
-        this.addLabel(group, sun.position.clone().add(new THREE.Vector3(0, surface.starRadius * 2.5, 0)), "Proxima Centauri", "proxima-space");
-
-        const other = destinationMesh(new THREE.SphereGeometry(otherSurface.planetRadius, 20, 16), new THREE.MeshLambertMaterial({ color: terrainOptions.frost ? 0x9eaab7 : 0xb98a67 }), otherId, (next) => this.goTo(next));
-        other.position.set(
-            PROXIMA_PLANETS[otherId].semiMajorAxisAu * SURFACE_RENDER_UNITS_PER_AU,
-            -surface.planetRadius,
-            -PROXIMA_PLANETS[id].semiMajorAxisAu * SURFACE_RENDER_UNITS_PER_AU,
-        );
-        group.add(other);
-        targets.push(other);
-        this.addLabel(group, other.position.clone().add(new THREE.Vector3(0, otherSurface.planetRadius * 1.04, 0)), otherName, otherId);
-        this.addDistantBinary(group, targets);
-        this.registerStage(id, group, targets);
-    }
-
-    texturedPlanet(texturePath, radius, color, destination) {
-        const texture = new THREE.TextureLoader().load(texturePath);
-        texture.colorSpace = THREE.SRGBColorSpace;
-        return destinationMesh(new THREE.SphereGeometry(radius, 32, 22), new THREE.MeshStandardMaterial({ map: texture, color, roughness: 0.9 }), destination, (next) => this.goTo(next));
-    }
-
-    createProximaSpace() {
-        const group = new THREE.Group();
-        const targets = [];
-        const bFacts = PROXIMA_PLANETS["proxima-b"];
-        const dFacts = PROXIMA_PLANETS["proxima-d"];
-        const proxima = star(3.4, 0xff7156);
-        group.add(proxima, new THREE.PointLight(0xff684e, 9, 54, 2));
-        group.children.at(-1).position.copy(proxima.position);
-        this.addLabel(group, new THREE.Vector3(0, 4.6, 0), "Proxima Centauri", null);
-        const bOrbitRadius = 16.8;
-        const dOrbitRadius = bOrbitRadius * (dFacts.semiMajorAxisAu / bFacts.semiMajorAxisAu);
-        const dOrbit = orbit(dOrbitRadius, dOrbitRadius * 0.78, 0x6b8eab);
-        const bOrbit = orbit(bOrbitRadius, bOrbitRadius * 0.78, 0x6b8eab);
-        group.add(dOrbit, bOrbit);
-        const bVisualRadius = 1.8;
-        const d = this.texturedPlanet("images/proxima-d-texture.png", bVisualRadius * (dFacts.estimatedRadiusEarth / bFacts.estimatedRadiusEarth), 0xb48661, "proxima-d");
-        d.position.set(-5.6, 0, 5.2);
-        group.add(d);
-        targets.push(d);
-        this.addLabel(group, d.position.clone().add(new THREE.Vector3(0, 1.6, 0)), "Proxima d", "proxima-d");
-        const b = this.texturedPlanet("images/proxima-b-texture.png", bVisualRadius, 0x849aac, "proxima-b");
-        b.position.set(12, 0, -8);
-        group.add(b);
-        targets.push(b);
-        this.addLabel(group, b.position.clone().add(new THREE.Vector3(0, 2.2, 0)), "Proxima b", "proxima-b");
-        const ab = new THREE.Group();
-        ab.userData.destination = "binary";
-        ab.userData.select = (next) => this.goTo(next);
-        const a = star(1.8, 0xffecbc);
-        const alphaB = star(1.3, 0xffba7f);
-        a.position.set(-2.5, 0.5, 0);
-        alphaB.position.set(2.5, -0.5, 0);
-        ab.add(a, alphaB);
-        ab.position.set(-18, 5, -36);
-        group.add(ab);
-        targets.push(ab);
-        this.addLabel(group, ab.position.clone().add(new THREE.Vector3(0, 2.7, 0)), "Alpha Centauri A/B", "binary");
-        const separation = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-1, 0, -4), ab.position]), new THREE.LineDashedMaterial({ color: 0x5e7697, dashSize: 0.8, gapSize: 0.8 }));
-        separation.computeLineDistances();
-        group.add(separation);
-        this.registerStage("proxima-space", group, targets);
-    }
-
-    createBinary() {
-        const group = new THREE.Group();
-        const a = star(4.2, 0xffedbd);
-        a.position.set(-7, 1.2, 0);
-        const b = star(3.1, 0xffba7c);
-        b.position.set(7, -1.2, 0);
-        group.add(orbit(14, 7.4), a, b, new THREE.PointLight(0xffedbd, 8, 42, 2));
-        group.children.at(-1).position.copy(a.position);
-        const proxima = new THREE.Group();
-        proxima.userData.destination = "proxima-space";
-        proxima.userData.select = (next) => this.goTo(next);
-        const proximaMarker = star(1.1, 0xff765a);
-        proximaMarker.position.set(0, -2, -28);
-        proxima.add(proximaMarker);
-        group.add(proxima);
-        this.addLabel(group, a.position.clone().add(new THREE.Vector3(0, 4.9, 0)), "α Cen A", null);
-        this.addLabel(group, b.position.clone().add(new THREE.Vector3(0, 3.8, 0)), "α Cen B", null);
-        this.addLabel(group, proximaMarker.position.clone().add(new THREE.Vector3(0, 1.6, 0)), "Proxima Centauri", "proxima-space");
-        this.addLabel(group, new THREE.Vector3(0, 8.8, 0), "A/B relative orbit: 23.5 AU", null);
-        this.registerStage("binary", group, [proxima]);
+    pruneLiveRegion() {
+        document.querySelectorAll(".region #graph, .region .scene-label-layer").forEach((node) => node.replaceChildren());
     }
 
     isActive() {
         return !document.body.classList.contains("shower") || this.shell.closest(".slide")?.classList.contains("active");
     }
 
-    resetSurfaceNavigation(stageId) {
+    relative(world) {
+        return sub(world, this.cameraWorld);
+    }
+
+    setObjectWorld(object, world) {
+        toVec(object.position, this.relative(world));
+    }
+
+    lookRelative() {
+        return this.relative(this.lookWorld);
+    }
+
+    applyCamera() {
+        this.camera.position.set(0, 0, 0);
+        toVec(this.camera.up, this.upWorld);
+        toVec(this.scratch, this.lookRelative());
+        this.camera.lookAt(this.scratch);
+        this.orbitControls.target.copy(this.scratch);
+    }
+
+    captureOrbit() {
+        if (!this.orbitControls.enabled) return;
+        const origin = this.cameraWorld;
+        this.cameraWorld = add(origin, this.camera.position.toArray());
+        this.lookWorld = add(origin, this.orbitControls.target.toArray());
+        this.camera.position.set(0, 0, 0);
+        toVec(this.orbitControls.target, this.lookRelative());
+    }
+
+    resetSurfaceNavigation(planetId) {
+        const planet = body(planetId);
+        if (!this.cameraWorld || !this.lookWorld) {
+            const pose = landingPose(planetId);
+            this.cameraWorld = pose.position.slice();
+            this.lookWorld = pose.target.slice();
+        }
+        const normal = normalize(sub(this.cameraWorld, planet.position));
+        const look = normalize(sub(this.lookWorld, this.cameraWorld));
+        const pitch = THREE.MathUtils.clamp(
+            Math.asin(Math.min(1, Math.max(-1, look[0] * normal[0] + look[1] * normal[1] + look[2] * normal[2]))),
+            THREE.MathUtils.degToRad(-70),
+            THREE.MathUtils.degToRad(70),
+        );
+        const headingVector = sub(look, scale(normal, look[0] * normal[0] + look[1] * normal[1] + look[2] * normal[2]));
+        const heading = hypot3(headingVector) < 1e-8 ? normalize([normal[2], 0, -normal[0]]) : normalize(headingVector);
         this.surfaceNavigation = {
-            stageId,
-            normal: new THREE.Vector3(0, 1, 0),
-            heading: new THREE.Vector3(0, 0, -1),
-            pitch: 0,
+            stageId: planetId,
+            normal: new THREE.Vector3(...normal),
+            heading: new THREE.Vector3(...heading),
+            pitch,
         };
     }
 
     updateSurfaceCamera() {
         const navigation = this.surfaceNavigation;
-        if (!navigation || navigation.stageId !== this.stage?.id) return;
-        const group = this.groups.get(navigation.stageId);
-        const { planetRadius } = group.userData.surface;
-        group.userData.updatePatch(navigation.normal);
-        const height = group.userData.heightAt(navigation.normal);
-        this.camera.position.copy(navigation.normal).multiplyScalar(planetRadius + height + 1.7);
-        this.camera.position.y -= planetRadius;
-        this.camera.up.copy(navigation.normal);
+        if (!navigation) return;
+        const planet = body(navigation.stageId);
+        const view = this.views.get(navigation.stageId);
+        view.terrain.updatePatch(navigation.normal);
+        const height = view.terrain.heightAt(navigation.normal);
+        this.cameraWorld = add(planet.position, [navigation.normal.x, navigation.normal.y, navigation.normal.z].map((value) => value * (planet.radius + height + EYE_HEIGHT)));
+        this.upWorld = navigation.normal.toArray();
         this.walkForward.copy(navigation.heading).multiplyScalar(Math.cos(navigation.pitch)).addScaledVector(navigation.normal, Math.sin(navigation.pitch));
-        this.orbitControls.target.copy(this.camera.position).add(this.walkForward);
-        this.camera.lookAt(this.orbitControls.target);
+        this.lookWorld = add(this.cameraWorld, this.walkForward.toArray());
+        this.applyCamera();
     }
 
     moveAcrossSurface(distance, direction) {
         const navigation = this.surfaceNavigation;
         if (!navigation || !distance) return;
-        const group = this.groups.get(navigation.stageId);
-        const radius = group.userData.surface.planetRadius + group.userData.heightAt(navigation.normal);
+        const planet = body(navigation.stageId);
+        const view = this.views.get(navigation.stageId);
+        const radius = planet.radius + view.terrain.heightAt(navigation.normal);
         const angle = distance / radius;
         navigation.normal.multiplyScalar(Math.cos(angle)).addScaledVector(direction, Math.sin(angle)).normalize();
         navigation.heading.addScaledVector(navigation.normal, -navigation.heading.dot(navigation.normal)).normalize();
     }
 
-    applyStage(next, { setCamera = true } = {}) {
-        this.groups.forEach((group, id) => { group.visible = id === next.id; });
-        this.stage = next;
-        this.clearInput();
-        this.orbitControls.enabled = next.controls === "orbit";
-        if (next.controls === "walk") this.resetSurfaceNavigation(next.id);
-        if (setCamera) {
-            if (next.controls === "walk") {
-                this.updateSurfaceCamera();
-            } else {
-                this.camera.position.fromArray(next.camera);
-                this.orbitControls.target.fromArray(next.target);
-                this.orbitControls.update();
+    syncNotes() {
+        const stage = STAGE_BY_ID[this.destination];
+        if (this.flight) this.note.textContent = STAGE_BY_ID[this.flight.destinationId].label;
+        else this.note.textContent = destinationCaption(stage.id);
+        this.help.innerHTML = stage.controls === "walk" && !this.flight ? SURFACE_CONTROLS : ORBIT_CONTROLS;
+        if (this.flight) this.help.innerHTML = ORBIT_CONTROLS;
+    }
+
+    arrive(id, { snap = false } = {}) {
+        this.destination = id;
+        this.flight = null;
+        this.flightProgress = 1;
+        const stage = STAGE_BY_ID[id];
+        this.orbitControls.enabled = stage.controls === "orbit";
+        if (stage.controls === "walk") {
+            this.orbitControls.enabled = false;
+            if (snap || !this.cameraWorld) {
+                const pose = landingPose(id);
+                this.cameraWorld = pose.position.slice();
+                this.lookWorld = pose.target.slice();
             }
+            this.resetSurfaceNavigation(id);
+            this.updateSurfaceCamera();
+        } else {
+            this.camera.up.set(0, 1, 0);
+            this.upWorld = [0, 1, 0];
+            const pose = destinationPose(id);
+            this.cameraWorld = pose.position.slice();
+            this.lookWorld = pose.target.slice();
+            this.applyCamera();
+            const range = hypot3(this.lookRelative());
+            let inner;
+            let outer;
+            if (id === "binary") {
+                inner = au(8);
+                outer = au(80);
+            } else if (id === "alpha-cen-a" || id === "alpha-cen-b") {
+                inner = body(id).radius * 1.2;
+                outer = au(40);
+            } else {
+                inner = body("proxima").radius * 1.2;
+                outer = Math.max(range * 4, inner * 2);
+            }
+            this.orbitControls.minDistance = Math.max(inner, range * 0.05);
+            this.orbitControls.maxDistance = outer;
         }
-        this.note.textContent = next.controls === "walk" ? planetCaption(next.id) : "One physical scale.";
-        this.help.innerHTML = next.controls === "walk" ? SURFACE_CONTROLS : ORBIT_CONTROLS;
+        this.syncNotes();
     }
 
     goTo(stageId, { immediate = false } = {}) {
         const next = STAGE_BY_ID[stageId];
-        if (!next || this.transitioning) return false;
-        if (immediate || !this.stage) {
-            this.applyStage(next);
+        if (!next || this.flight) return false;
+        if (immediate || !this.cameraWorld) {
+            this.arrive(stageId, { snap: true });
             return true;
         }
-        this.transitioning = true;
-        this.clearInput();
+        if (stageId === this.destination) return false;
         this.orbitControls.enabled = false;
-        const originPosition = this.camera.position.clone();
-        const originTarget = this.orbitControls.target.clone();
-        const departurePosition = originPosition.clone().lerp(originTarget, 0.72);
-        const arrivalTarget = new THREE.Vector3().fromArray(next.target);
-        const arrivalPosition = new THREE.Vector3().fromArray(next.camera);
-        const arrivalDirection = arrivalPosition.clone().sub(arrivalTarget).normalize();
-        const arrivalStart = arrivalTarget.clone().addScaledVector(arrivalDirection, Math.max(56, arrivalPosition.distanceTo(arrivalTarget) * 3));
-        this.flight = {
-            next,
-            started: performance.now(),
-            originPosition,
-            originTarget,
-            departurePosition,
-            arrivalPosition,
-            arrivalTarget,
-            arrivalStart,
-            swapped: false,
-        };
+        this.clearInput();
+        this.flight = createFlight({
+            fromPosition: this.cameraWorld,
+            fromTarget: this.lookWorld,
+            fromUp: this.upWorld,
+            destinationId: stageId,
+        });
+        this.flightStarted = performance.now();
+        this.flightProgress = 0;
+        this.syncNotes();
         return true;
     }
 
     updateFlight(time) {
         if (!this.flight) return;
-        const flight = this.flight;
-        const progress = THREE.MathUtils.clamp((time - flight.started) / 1800, 0, 1);
-        if (progress < 0.43) {
-            const ease = THREE.MathUtils.smootherstep(progress / 0.43, 0, 1);
-            this.camera.position.lerpVectors(flight.originPosition, flight.departurePosition, ease);
-            this.orbitControls.target.copy(flight.originTarget);
-            this.camera.lookAt(flight.originTarget);
-            return;
+        const progress = Math.min(1, (time - this.flightStarted) / (this.flight.duration * 1000));
+        this.flightProgress = progress;
+        const sample = this.flight.sample(progress);
+        this.cameraWorld = sample.position;
+        this.lookWorld = sample.target;
+        this.upWorld = sample.up ?? [0, 1, 0];
+        this.applyCamera();
+        if (progress === 1) this.arrive(this.flight.destinationId);
+    }
+
+    syncLods() {
+        let anyClose = false;
+        for (const item of bodies()) {
+            const view = this.views.get(item.id);
+            const offset = this.relative(item.position);
+            const distance = hypot3(offset);
+            const lod = selectLod(distance, item.radius, item.kind);
+            view.lod = lod;
+            if (lod === "far") {
+                const proxy = farProxy(distance, item.radius);
+                toVec(view.root.position, scale(normalize(offset), proxy.distance));
+                const discScale = proxy.scale / item.radius;
+                view.mesh.scale.setScalar(Math.max(discScale, 1e-6));
+            } else {
+                toVec(view.root.position, offset);
+                view.mesh.scale.setScalar(1);
+            }
+            const close = lod === "close";
+            if (close) anyClose = true;
+            view.mesh.visible = lod === "middle" || (lod === "far" && !view.disc);
+            if (view.terrain) view.terrain.group.visible = close;
+            if (view.disc) {
+                view.disc.visible = lod === "far";
+                const angular = 2 * Math.atan(item.radius / Math.max(distance, 1));
+                const pixels = this.mount.clientHeight * angular / THREE.MathUtils.degToRad(this.camera.fov);
+                const floor = item.id === "proxima" ? 2 : 10;
+                view.disc.element.style.width = `${Math.max(floor, pixels)}px`;
+                view.disc.element.style.height = `${Math.max(floor, pixels)}px`;
+            }
+            if (view.label) {
+                const proxyScale = lod === "far" ? farProxy(distance, item.radius).scale / item.radius : 1;
+                view.label.position.set(0, item.radius * proxyScale * 1.08, 0);
+                const pair = this.viewingPair();
+                if (item.id === "alpha-cen-a") {
+                    view.label.element.textContent = pair ? "α Cen A" : "α Centauri A/B";
+                    view.label.visible = lod !== "close";
+                } else if (item.id === "alpha-cen-b") {
+                    view.label.visible = pair && lod !== "close";
+                    view.disc.visible = pair && lod === "far";
+                } else {
+                    view.label.visible = lod !== "close" && !pair;
+                    if (view.disc) view.disc.visible = lod === "far" && !pair;
+                }
+            }
         }
-        if (!flight.swapped) {
-            this.fade.classList.add("visible");
-            flight.swapped = true;
-        }
-        if (progress < 0.49) return;
-        if (this.stage !== flight.next) {
-            this.applyStage(flight.next, { setCamera: false });
-            this.camera.position.copy(flight.arrivalStart);
-            this.orbitControls.target.copy(flight.arrivalTarget);
-            this.camera.lookAt(flight.arrivalTarget);
-        }
-        if (progress >= 0.55) this.fade.classList.remove("visible");
-        const ease = THREE.MathUtils.smootherstep((progress - 0.49) / 0.51, 0, 1);
-        this.camera.position.lerpVectors(flight.arrivalStart, flight.arrivalPosition, ease);
-        this.orbitControls.target.copy(flight.arrivalTarget);
-        this.camera.lookAt(flight.arrivalTarget);
-        if (progress === 1) {
-            this.orbitControls.enabled = this.stage.controls === "orbit";
-            this.orbitControls.update();
-            this.transitioning = false;
-            this.flight = null;
-        }
+        this.orbits.visible = !anyClose && !this.viewingPair();
+        toVec(this.orbits.position, scale(this.cameraWorld, -1));
+        const pairOverview = (this.flight?.destinationId ?? this.destination) === "binary";
+        this.binaryOrbits.visible = pairOverview;
+        const baryOffset = this.relative(barycenter());
+        const baryDistance = hypot3(baryOffset);
+        const baryProxy = farProxy(baryDistance, 1);
+        toVec(this.binaryOrbits.position, scale(normalize(baryOffset), baryProxy.distance));
+        this.binaryOrbits.scale.setScalar(baryProxy.distance / Math.max(baryDistance, 1e-9));
+        toVec(this.starlight.position, scale(normalize(this.relative(body("proxima").position)), 8));
     }
 
     keyDown(event) {
@@ -440,19 +498,19 @@ export class StagedDemo {
         const key = event.key.toLowerCase();
         if (STAGE_BY_KEY[key]) {
             event.preventDefault();
-            this.goTo(STAGE_BY_KEY[key].id, { immediate: true });
+            this.goTo(STAGE_BY_KEY[key].id);
             return;
         }
         if (key === "r") {
             event.preventDefault();
-            this.goTo(this.stage.id, { immediate: true });
+            this.goTo(this.destination, { immediate: true });
             return;
         }
         if (key === "escape") {
             this.clearInput();
             return;
         }
-        if (this.stage.controls === "walk" && ["w", "a", "s", "d", "shift"].includes(key)) {
+        if (STAGE_BY_ID[this.destination]?.controls === "walk" && !this.flight && ["w", "a", "s", "d", "shift"].includes(key)) {
             event.preventDefault();
             this.keys.add(key);
         }
@@ -462,33 +520,37 @@ export class StagedDemo {
         const rect = this.renderer.domElement.getBoundingClientRect();
         const pointer = new THREE.Vector2(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
         const raycaster = new THREE.Raycaster();
-        raycaster.params.Points.threshold = 100_000;
+        raycaster.params.Points.threshold = 8;
         raycaster.setFromCamera(pointer, this.camera);
-        const hit = raycaster.intersectObjects(this.rayTargets.get(this.stage.id), true)[0];
-        let target = hit?.object;
-        while (target && !target.userData.destination) target = target.parent;
-        return target?.userData.destination ? target : null;
+        const hits = raycaster.intersectObjects(this.clickables, true);
+        for (const hit of hits) {
+            let target = hit.object;
+            while (target && !target.userData.destination) target = target.parent;
+            if (target?.userData.destination && target.visible) return target;
+        }
+        return null;
     }
 
     surfacePointerDown(event) {
-        if (!this.isActive() || this.transitioning || this.stage?.controls !== "walk" || event.button !== 0) return;
-        this.renderer.domElement.focus({ preventScroll: true });
-        const destination = this.destinationAt(event);
+        if (!this.isActive() || this.flight || STAGE_BY_ID[this.destination]?.controls !== "walk" || event.button !== 0) return;
+        const hit = this.destinationAt(event);
+        const policy = walkPointerDown({ hitDestination: hit?.userData.destination });
         this.surfaceDrag = {
             pointerId: event.pointerId,
-            destination,
+            destination: hit,
+            allowLook: policy.allowLook,
             moved: false,
             startX: event.clientX,
             startY: event.clientY,
             lastX: event.clientX,
             lastY: event.clientY,
         };
-        if (!destination) this.renderer.domElement.setPointerCapture(event.pointerId);
+        if (policy.capture) this.renderer.domElement.setPointerCapture(event.pointerId);
     }
 
     surfacePointerMove(event) {
         const drag = this.surfaceDrag;
-        if (!drag || drag.pointerId !== event.pointerId || drag.destination) return;
+        if (!drag || drag.pointerId !== event.pointerId || !drag.allowLook) return;
         const totalX = event.clientX - drag.startX;
         const totalY = event.clientY - drag.startY;
         if (!drag.moved && Math.hypot(totalX, totalY) < 4) return;
@@ -508,7 +570,10 @@ export class StagedDemo {
         if (!drag || drag.pointerId !== event.pointerId) return;
         this.surfaceDrag = null;
         if (this.renderer.domElement.hasPointerCapture(event.pointerId)) this.renderer.domElement.releasePointerCapture(event.pointerId);
-        if (drag.destination && !drag.moved && !this.transitioning) drag.destination.userData.select(drag.destination.userData.destination);
+        const hitDestination = drag.destination?.userData.destination;
+        if (walkPointerUp({ hitDestination, currentDestination: this.destination, moved: drag.moved }).select && !this.flight) {
+            drag.destination.userData.select(hitDestination);
+        }
     }
 
     clearInput() {
@@ -520,7 +585,7 @@ export class StagedDemo {
     }
 
     walk(delta) {
-        if (this.transitioning || this.stage?.controls !== "walk") return;
+        if (this.flight || STAGE_BY_ID[this.destination]?.controls !== "walk") return;
         const speed = delta * (this.keys.has("shift") ? 2_000 : 8);
         const navigation = this.surfaceNavigation;
         this.walkForward.copy(navigation.heading);
@@ -540,28 +605,25 @@ export class StagedDemo {
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(width, height, false);
         this.labels.setSize(width, height);
-        this.groups.forEach((group) => {
-            group.traverse((object) => {
-                if (object.userData.angularDiameter) {
-                    const pixels = height * object.userData.angularDiameter / THREE.MathUtils.degToRad(this.camera.fov);
-                    object.element.style.width = `${pixels}px`;
-                    object.element.style.height = `${pixels}px`;
-                }
-            });
-        });
     }
 
     start() {
         if (this.running || !this.isActive()) return;
         this.running = true;
         this.lastFrame = performance.now();
+        this.pruneLiveRegion();
         const render = (time) => {
             if (!this.running) return;
             const delta = Math.min((time - this.lastFrame) / 1000, 0.05);
             this.lastFrame = time;
             this.updateFlight(time);
             this.walk(delta);
-            if (this.stage?.controls === "orbit") this.orbitControls.update();
+            if (this.orbitControls.enabled) {
+                this.orbitControls.update();
+                this.captureOrbit();
+            }
+            this.syncLods();
+            this.pruneLiveRegion();
             this.renderer.render(this.scene, this.camera);
             this.labels.render(this.scene, this.camera);
             this.frame = requestAnimationFrame(render);
@@ -589,7 +651,7 @@ export class StagedDemo {
         this.renderer.domElement.removeEventListener("pointercancel", this.onSurfacePointerEnd);
         this.renderer.domElement.removeEventListener("lostpointercapture", this.onSurfacePointerEnd);
         this.orbitControls.dispose();
-        this.groups.forEach(disposeObject);
+        disposeObject(this.scene);
         this.renderer.dispose();
         this.labels.domElement.remove();
     }
