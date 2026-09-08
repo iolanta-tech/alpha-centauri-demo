@@ -4,6 +4,10 @@ const EARTH_RADIUS_AU = 0.000042634;
 // Faria et al. (2022), as catalogued by the NASA Exoplanet Archive, gives
 // Proxima Centauri a radius of 0.141 solar radii.
 export const PROXIMA_CENTAURI = {
+    spectralType: "M5.5V",
+    description: "red dwarf",
+    massSolar: 0.122,
+    radiusSolar: 0.141,
     radiusAu: 0.0006557,
     source: "https://exoplanetarchive.ipac.caltech.edu/overview/Proxima%20Centauri%20b",
 };
@@ -11,14 +15,16 @@ export const PROXIMA_CENTAURI = {
 export const ALPHA_CENTAURI_AB = {
     separationFromProximaAu: 13_000,
     relativeSemimajorAxisAu: 23.5,
+    periodYears: 79.9,
     // Presentation pose: a rigid sky orientation chosen to keep both the
     // local star and the distant binary above the modeled surface horizon.
     skyDirection: [-0.56, 0.24, -0.79],
+    a: { spectralType: "G2V", massSolar: 1.079, radiusSolar: 1.2174 },
+    b: { spectralType: "K1V", massSolar: 0.909, radiusSolar: 0.8591 },
     source: "https://www.cambridge.org/core/journals/publications-of-the-astronomical-society-of-australia/article/abs/alpha-centauri/7ED97A40788D66BF0D70B46759E6CA23",
 };
 
-// Observational values are kept separate from the deliberately non-literal
-// scene scales and surface art below. NASA lists the radii as estimates.
+// NASA lists the planetary radii as estimates. Surface relief is modeled.
 export const PROXIMA_PLANETS = {
     "proxima-b": {
         name: "Proxima Centauri b",
@@ -80,50 +86,76 @@ export function planetCaption(planet) {
     return `M ${facts.massEarth} M⊕ · R≈${facts.estimatedRadiusEarth} R⊕ · a ${facts.semiMajorAxisAu} AU · P ${facts.orbitalPeriodDays} d`;
 }
 
+export function starCaption(id) {
+    if (id === "proxima-space" || id === "proxima") {
+        return `${PROXIMA_CENTAURI.spectralType} ${PROXIMA_CENTAURI.description} · M ${PROXIMA_CENTAURI.massSolar} M☉ · R ${PROXIMA_CENTAURI.radiusSolar} R☉`;
+    }
+    if (id === "binary") {
+        const { a, b, relativeSemimajorAxisAu } = ALPHA_CENTAURI_AB;
+        return `A ${a.spectralType} · B ${b.spectralType} · M ${a.massSolar}+${b.massSolar} M☉ · a ${relativeSemimajorAxisAu} AU`;
+    }
+    if (id === "alpha-cen-a") {
+        const { a } = ALPHA_CENTAURI_AB;
+        return `${a.spectralType} · M ${a.massSolar} M☉ · R ${a.radiusSolar.toFixed(3)} R☉`;
+    }
+    if (id === "alpha-cen-b") {
+        const { b } = ALPHA_CENTAURI_AB;
+        return `${b.spectralType} · M ${b.massSolar} M☉ · R ${b.radiusSolar.toFixed(3)} R☉`;
+    }
+    throw new Error(`Unknown star destination: ${id}`);
+}
+
+export function destinationCaption(id) {
+    if (PROXIMA_PLANETS[id]) return planetCaption(id);
+    return starCaption(id);
+}
+
 export const STAGES = [
     {
         id: "proxima-b",
         key: "1",
         label: "Proxima Centauri b",
         controls: "walk",
-        camera: [0, 0.017, 0],
-        target: [0, -65_000, -72_500_000],
     },
     {
         id: "proxima-d",
         key: "2",
         label: "Proxima Centauri d",
         controls: "walk",
-        camera: [0, 0.017, 0],
-        target: [0, -44_000, -43_000_000],
     },
     {
         id: "proxima-space",
         key: "3",
         label: "Proxima system",
         controls: "orbit",
-        camera: [16, 7, 28],
-        target: [0, 1, 0],
     },
     {
         id: "binary",
         key: "4",
         label: "Alpha Centauri A/B",
         controls: "orbit",
-        camera: [20, 12, 32],
-        target: [0, 0, 0],
+    },
+    {
+        id: "alpha-cen-a",
+        label: "Alpha Centauri A",
+        controls: "orbit",
+    },
+    {
+        id: "alpha-cen-b",
+        label: "Alpha Centauri B",
+        controls: "orbit",
     },
 ];
 
 export const STAGE_BY_ID = Object.fromEntries(STAGES.map((stage) => [stage.id, stage]));
-export const STAGE_BY_KEY = Object.fromEntries(STAGES.map((stage) => [stage.key, stage]));
+export const STAGE_BY_KEY = Object.fromEntries(STAGES.filter((stage) => stage.key).map((stage) => [stage.key, stage]));
 
 export function validateStages(stages = STAGES) {
     const ids = new Set(stages.map((stage) => stage.id));
     if (ids.size !== stages.length) throw new Error("Stage identifiers must be unique");
     stages.forEach((stage) => {
-        if (!Array.isArray(stage.camera) || !Array.isArray(stage.target)) {
-            throw new Error(`Missing camera data for ${stage.id}`);
+        if (!["walk", "orbit"].includes(stage.controls)) {
+            throw new Error(`Missing controls for ${stage.id}`);
         }
     });
     if (!["proxima-b", "proxima-d", "proxima-space", "binary"].every((id) => ids.has(id))) {
