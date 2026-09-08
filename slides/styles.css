@@ -213,78 +213,126 @@ aside {
     height: 100% !important;
 }
 
-.graph-labels {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-}
-
-/* Shower clones active-slide content for its live region. A cloned WebGL graph
-   would leave a second, static set of labels visible to sighted viewers. */
 .region .graph-shell {
     display: none;
 }
 
-.graph-label {
+.scene-label-layer {
     position: absolute;
-    transform: translate(var(--label-offset-x, -50%), var(--label-offset-y, -120%));
-    color: #fff;
-    font-size: 17px;
-    font-weight: bold;
+    inset: 0;
+    z-index: 2;
+}
+
+.scene-label {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: #f5f6f8;
+    font: 700 18px/1.1 "PT Sans", sans-serif;
+    text-shadow: 0 1px 4px #05070d, 0 0 9px #05070d;
     white-space: nowrap;
-    text-shadow: 0 1px 2px #101418;
+    cursor: pointer;
+    pointer-events: auto;
 }
 
-.graph-details {
-    position: absolute;
-    right: 12px;
-    bottom: 12px;
-    max-width: 360px;
-    padding: 10px 12px;
-    background: rgba(16, 20, 24, 0.88);
-    color: #fff;
-    font-size: 16px;
+.scene-label:hover,
+.scene-label:focus-visible {
+    color: #ffd6a4;
+    outline: none;
 }
 
-.graph-toolbar {
+.scene-star-disc {
+    border: 0;
+    border-radius: 50%;
+    background: #ff7657;
+    box-shadow: 0 0 14px rgb(255 118 87 / 45%);
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.scene-star-disc:hover,
+.scene-star-disc:focus-visible {
+    box-shadow: 0 0 20px rgb(255 185 136 / 85%);
+    outline: none;
+}
+
+#scene-fade {
     position: absolute;
-    bottom: 12px;
-    left: 12px;
-    z-index: 1;
+    z-index: 4;
+    inset: 0;
+    background: #05070d;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms ease;
+}
+
+#scene-fade.visible {
+    opacity: 1;
+}
+
+.scene-note,
+.scene-help {
+    position: absolute;
+    z-index: 3;
     margin: 0;
+    color: rgb(232 235 240 / 84%);
+    font: 12px/1.25 "PT Sans", sans-serif;
+    text-shadow: 0 1px 3px #05070d;
 }
 
-.graph-toolbar button {
-    font-size: 18px;
+.scene-note {
+    left: 28px;
+    bottom: 24px;
+    max-width: 50%;
+    color: rgb(232 235 240 / 68%);
 }
 
-#graph-slide .orbit-overlay {
-    position: absolute !important;
-    top: 28px;
-    left: 34px;
-    z-index: 3;
-    max-width: 720px;
-    padding: 16px 20px 15px;
-    border: 1px solid rgb(191 209 235 / 22%);
-    border-radius: 8px;
-    background: rgb(5 7 13 / 78%);
-    box-shadow: 0 8px 22px rgb(0 0 0 / 28%);
-    backdrop-filter: blur(9px);
+.scene-help {
+    right: 28px;
+    bottom: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 7px 12px;
+    max-width: 580px;
+    text-align: right;
 }
 
-#graph-slide .orbit-scale-note {
-    display: block !important;
-    position: static !important;
-    max-width: none;
-    margin: 8px 0 0;
-    color: #d9e3f2;
-    font-size: 16px;
-    line-height: 1.25;
+.control-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: rgb(232 235 240 / 74%);
+    white-space: nowrap;
 }
 
-#graph-slide .graph-details,
-#graph-slide .graph-toolbar {
-    z-index: 3;
+.control-keys {
+    display: inline-flex;
+    gap: 2px;
+}
+
+.scene-help kbd,
+.control-gesture {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 18px;
+    box-sizing: border-box;
+    padding: 1px 5px;
+    border: 1px solid rgb(232 235 240 / 35%);
+    border-bottom-color: rgb(232 235 240 / 58%);
+    border-radius: 3px;
+    background: rgb(232 235 240 / 10%);
+    color: rgb(245 246 248 / 92%);
+    font: 700 10px/1 "PT Sans", sans-serif;
+    letter-spacing: 0.02em;
+    text-shadow: none;
+}
+
+.control-gesture {
+    padding-inline: 6px;
+    font-weight: 400;
+    text-transform: uppercase;
 }
 
 .legend {
