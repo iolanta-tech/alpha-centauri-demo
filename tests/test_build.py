@@ -17,8 +17,12 @@ def test_render_writes_metrics_graph_and_fragments():
     assert "Proxima Centauri" in graph
     assert 'type="importmap"' in deck
     assert 'type="module" src="talk.js"' in deck
-    assert "proxima-b-texture.png" in (SLIDES / "talk.js").read_text(encoding="utf-8")
-    assert "proxima-d-texture.png" in (SLIDES / "talk.js").read_text(encoding="utf-8")
+    demo = (SLIDES / "demo" / "staged-demo.js").read_text(encoding="utf-8")
+    assert "proxima-b-texture.png" in demo
+    assert "proxima-d-texture.png" in demo
+    assert "surfacePointerMove" in demo
+    assert "CSS2DRenderer" in demo
+    assert (SLIDES / "vendor" / "CSS2DRenderer.js").exists()
     assert 'id="graph"' in deck
     assert "graph-svg" not in deck
     assert "JSON ⊂ YAML" in deck
