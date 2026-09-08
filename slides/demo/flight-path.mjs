@@ -12,7 +12,7 @@ import {
 const FLIGHT_DURATION = 10;
 const LIFT_RADII = 8;
 const APPROACH_RADII = 40;
-const CLEARANCE = 1;
+const CLEARANCE = 1e-9;
 const LIFT_UNTIL = 0.12;
 const CRUISE_UNTIL = 0.34;
 
@@ -46,11 +46,11 @@ function sampleByDistance(points, t) {
         lengths.push(length);
         total += length;
     }
-    if (total < 1e-9) return points[points.length - 1];
+    if (total < 1e-12) return points[points.length - 1];
     let remaining = Math.min(1, Math.max(0, t)) * total;
     for (let index = 0; index < lengths.length; index += 1) {
         if (remaining <= lengths[index] || index === lengths.length - 1) {
-            const local = lengths[index] < 1e-9 ? 1 : remaining / lengths[index];
+            const local = lengths[index] < 1e-12 ? 1 : remaining / lengths[index];
             return lerp(points[index], points[index + 1], Math.min(1, local));
         }
         remaining -= lengths[index];
@@ -88,8 +88,8 @@ function pushClear(point) {
 }
 
 function logLerp(a, b, t) {
-    const start = Math.max(1, a);
-    const end = Math.max(1, b);
+    const start = Math.max(1e-12, a);
+    const end = Math.max(1e-12, b);
     return Math.exp(Math.log(start) * (1 - t) + Math.log(end) * t);
 }
 
@@ -104,7 +104,7 @@ function sampleByDistanceTo(points, focus, distance) {
         const hi = Math.max(from, to);
         if ((distance >= lo && distance <= hi) || last) {
             const span = to - from;
-            const local = Math.abs(span) < 1e-9 ? 1 : (distance - from) / span;
+            const local = Math.abs(span) < 1e-12 ? 1 : (distance - from) / span;
             return lerp(start, end, Math.min(1, Math.max(0, local)));
         }
     }
@@ -129,9 +129,6 @@ export function createFlight({ fromPosition, fromTarget, fromUp = [0, 1, 0], des
         length += hypot3(sub(point, previous));
         previous = point;
     }
-    const landing = Boolean(dest.normal);
-    const endLook = landing ? [0, 0, 0] : dest.target;
-    const endUp = dest.normal ?? [0, 1, 0];
     const fromR = hypot3(sub(approach, targetBody.position));
     const toR = hypot3(sub(dest.position, targetBody.position));
     const descentRadial = normalize(sub(approach, targetBody.position));
@@ -153,22 +150,13 @@ export function createFlight({ fromPosition, fromTarget, fromUp = [0, 1, 0], des
             } else {
                 position = add(targetBody.position, scale(descentRadial, logLerp(fromR, toR, descentU)));
             }
-            const offset = sub(position, targetBody.position);
-            const dist = hypot3(offset);
-            const radiiOut = dist / Math.max(targetBody.radius, 1);
             const toSubject = normalize(sub(fromTarget, position));
-            const toPlanet = normalize(scale(offset, -1));
-            const toEnd = normalize(sub(endLook, position));
-            const framePlanet = landing ? Math.min(1, Math.max(0, (u - CRUISE_UNTIL) / 0.24)) : 1;
-            const toHorizon = landing ? Math.min(1, Math.max(0, (4.5 - radiiOut) / 3.2)) : 1;
-            const framed = nlerp(toSubject, toPlanet, framePlanet);
-            const dir = landing
-                ? nlerp(framed, toEnd, toHorizon)
-                : u < 0.08 ? toSubject : u < 0.4 ? nlerp(toSubject, toEnd, smoothstep((u - 0.08) / 0.32)) : toEnd;
+            const toEnd = normalize(sub(dest.target, position));
+            const dir = u < 0.08 ? toSubject : u < 0.4 ? nlerp(toSubject, toEnd, smoothstep((u - 0.08) / 0.32)) : toEnd;
             return {
                 position,
                 target: add(position, dir),
-                up: nlerp(fromUp, endUp, landing ? toHorizon : 0),
+                up: nlerp(fromUp, [0, 1, 0], Math.min(1, u / 0.4)),
             };
         },
     };
