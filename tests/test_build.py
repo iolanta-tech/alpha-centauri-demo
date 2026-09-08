@@ -20,7 +20,9 @@ def test_render_writes_metrics_graph_and_fragments():
     demo = (SLIDES / "demo" / "staged-demo.js").read_text(encoding="utf-8")
     assert "proxima-b-texture.png" in demo
     assert "proxima-d-texture.png" in demo
-    assert "surfacePointerMove" in demo
+    assert "OrbitControls" in demo
+    assert "createTerrain" not in demo
+    assert "surfacePointerMove" not in demo
     assert "CSS2DRenderer" in demo
     assert (SLIDES / "vendor" / "CSS2DRenderer.js").exists()
     assert 'id="graph"' in deck
