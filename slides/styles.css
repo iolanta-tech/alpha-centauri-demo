@@ -241,6 +241,11 @@ aside {
     outline: none;
 }
 
+.scene-label-static {
+    cursor: default;
+    pointer-events: none;
+}
+
 .scene-star-disc {
     border: 0;
     border-radius: 50%;
@@ -256,18 +261,14 @@ aside {
     outline: none;
 }
 
-#scene-fade {
-    position: absolute;
-    z-index: 4;
-    inset: 0;
-    background: #05070d;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 120ms ease;
+.scene-star-disc.star-a {
+    background: #ffe5ab;
+    box-shadow: 0 0 16px rgb(255 229 171 / 55%);
 }
 
-#scene-fade.visible {
-    opacity: 1;
+.scene-star-disc.star-b {
+    background: #ffba7c;
+    box-shadow: 0 0 16px rgb(255 186 124 / 55%);
 }
 
 .scene-note,
