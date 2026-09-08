@@ -9,7 +9,7 @@ from .paths import SLIDES
 
 console = Console()
 DEFAULT_PORT = 8765
-HOST = "127.0.0.1"
+HOST = "0.0.0.0"
 
 
 def serve(port: int = DEFAULT_PORT) -> None:  # pragma: nocover
