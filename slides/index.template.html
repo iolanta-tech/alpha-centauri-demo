@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <link rel="stylesheet" href="shower/themes/ribbon/styles/index.css">
-    <link rel="stylesheet" href="styles.css?revision=implementation-links">
+    <link rel="stylesheet" href="styles.css?revision=surface-controls">
     <style>{{ pygments_css | safe }}</style>
 </head>
 <body class="shower list">
@@ -41,17 +41,12 @@
     <section class="slide graph-slide" id="graph-slide">
         <div class="graph-shell">
             <div id="graph"></div>
-            <div id="graph-labels" class="graph-labels"></div>
-            <div class="orbit-overlay">
-                <p class="orbit-scale-note">Separate scales. Textured planets are magnified, inferred proxies.</p>
-            </div>
-            <div id="graph-details" class="graph-details">Drag to orbit. Scroll to zoom.</div>
-            <p class="graph-toolbar">
-                <button type="button" id="reset-camera">Reset view</button>
-            </p>
+            <div id="scene-fade" aria-hidden="true"></div>
+            <p id="scene-note" class="scene-note"></p>
+            <aside id="scene-help" class="scene-help" aria-label="Controls"></aside>
         </div>
         <script id="graph-data" type="application/json">{{ graph | tojson }}</script>
-        <aside>4–8 min. Meet the system before seeing its RDF representation. The A/B binary has a 23.5 AU semimajor axis. Proxima is currently about 13,000 AU from it. Proxima d and b orbit at 0.02881 AU and 0.04848 AU. Sources: https://www.cambridge.org/core/journals/publications-of-the-astronomical-society-of-australia/article/abs/alpha-centauri/7ED97A40788D66BF0D70B46759E6CA23 and https://exoplanetarchive.ipac.caltech.edu/overview/Proxima%20Centauri%20b and https://science.nasa.gov/exoplanet-catalog/proxima-centauri-d/.</aside>
+        <aside>4–8 min. Meet the system before seeing its RDF representation. The A/B binary has a 23.5 AU semimajor axis. Proxima is currently about 13,000 AU from it. Proxima d and b orbit at 0.02881 AU and 0.04848 AU. Sources: https://www.cambridge.org/core/journals/publications-of-the-astronomical-society-of-australia/article/abs/alpha-centauri/7ED97A40788D66BF0D70B46759E6CA23 and NASA’s catalogs for https://science.nasa.gov/exoplanet-catalog/proxima-centauri-b/ and https://science.nasa.gov/exoplanet-catalog/proxima-centauri-d/.</aside>
     </section>
 
     <section class="slide code-slide" id="jsonld">
