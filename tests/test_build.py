@@ -87,16 +87,16 @@ def test_render_writes_metrics_graph_and_fragments():
     assert (
         yaml_start
         < dollar_start
+        < comments_start
         < specification_start
         < norway_problem_start
         < norway_start
-        < comments_start
         < mapping_keys_start
         < markdown_start
     )
     norway_problem_slide = deck[norway_problem_start:norway_start]
-    norway_slide = deck[norway_start:comments_start]
-    comments_slide = deck[comments_start:mapping_keys_start]
+    norway_slide = deck[norway_start:mapping_keys_start]
+    comments_slide = deck[comments_start:specification_start]
     assert "The Norway problem" in norway_problem_slide
     assert "YAML 1.1 would read" in norway_problem_slide
     assert '"country"</span><span class="p">:</span><span class="w"> </span><span class="kc">false' in norway_problem_slide
@@ -107,7 +107,8 @@ def test_render_writes_metrics_graph_and_fragments():
     assert 'class="columns four implementation-grid"' in implementations_slide
     assert 'class="columns two questions-links"' in questions_slide
     assert deck.count('class="code-info place bottom right"') == 6
-    assert "Comments are whitespace" in comments_slide
+    assert "Comments are whitespace" not in deck
+    assert ">Comments</h2>" in comments_slide
     comments_fragment = FRAGMENTS / "comments.yamlld.html"
     assert comments_fragment.exists()
     assert 'class="c1"' in comments_fragment.read_text(encoding="utf-8")
@@ -120,7 +121,7 @@ def test_render_writes_metrics_graph_and_fragments():
     mapping_slide = deck[mapping_keys_start:markdown_start]
     assert "mapping-key-error" in mapping_slide
     assert "Guillem_Anglada-Escudé" in mapping_slide
-    dollar_slide = deck[dollar_start:specification_start]
+    dollar_slide = deck[dollar_start:comments_start]
     assert '<span class="sigil-at">@</span> needs to stay quoted, <span class="sigil-dollar">$</span> does not' in dollar_slide
     assert dollar_slide.count("dollar-convenience") >= 2
     invalid_fragment = FRAGMENTS / "invalid-mapping-key.yamlld.html"
