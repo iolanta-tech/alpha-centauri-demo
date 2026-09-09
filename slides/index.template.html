@@ -33,9 +33,8 @@
     {%- endmacro %}
 
     <section class="slide" id="title">
-        <h2>YAML-LD: Linked Data for Humans &amp; Agents</h2>
-        <p class="lede">A trip through the α Centauri system</p>
-        <aside>0–1 min. Title and the promise: same graph, friendlier source.</aside>
+        <h2 class="shout">YAML-LD</h2>
+        <aside>0–1 min. Introduce the format; the next slide begins the demonstration.</aside>
     </section>
 
     <section class="slide graph-slide" id="graph-slide">
@@ -50,7 +49,7 @@
 
     <section class="slide code-slide" id="jsonld">
         <div class="code-frame">
-            <div class="code-info">
+            <div class="code-info place bottom right">
                 <h2 class="code-title">The α Centauri RDF graph in JSON-LD <img class="technology-logo jsonld-logo" src="images/logos/json-ld.svg" alt=""></h2>
                 {{ byte_metric(metrics['01-canonical.jsonld']) }}
             </div>
@@ -59,28 +58,24 @@
         <aside>9–11 min. This document is canonical for every later stage. It records system membership, constellation, and orbital relationships.</aside>
     </section>
 
-    <section class="slide subset-slide" id="json-subset">
-        <div class="subset-equation">
-            <img class="technology-logo subset-logo" src="images/logos/json.svg" alt="">
-            <h2>JSON ⊂ YAML</h2>
-            <img class="technology-logo subset-logo" src="images/logos/yaml.svg" alt="">
-        </div>
+    <section class="slide" id="json-subset">
+        <h2 class="shout"><span class="subset-expression"><img class="technology-logo subset-logo" src="images/logos/json.svg" alt=""> JSON ⊂ YAML <img class="technology-logo subset-logo" src="images/logos/yaml.svg" alt=""></span></h2>
     </section>
 
     <section class="slide code-slide" id="jsonld-marked">
         <div class="code-frame">
-            <div class="code-info">
+            <div class="code-info place bottom right">
                 <h2 class="code-title">The α Centauri RDF graph in JSON-LD <img class="technology-logo jsonld-logo" src="images/logos/json-ld.svg" alt=""></h2>
                 {{ byte_metric(metrics['01-canonical.jsonld']) }}
             </div>
             <div class="code-pane">{{ fragments['01-canonical-marked.jsonld'] | safe }}</div>
         </div>
-        <aside>12–14 min. This is the same JSON-LD document. Now point out the highlighted braces, brackets, and commas. @context and the colon still carry structure in YAML.</aside>
+        <aside>12–14 min. This is the same JSON-LD document. Now point out the highlighted braces, brackets, commas, and removable quotes. @context and the colon still carry structure in YAML.</aside>
     </section>
 
     <section class="slide code-slide" id="yaml-plain">
         <div class="code-frame">
-            <div class="code-info">
+            <div class="code-info place bottom right">
                 <h2 class="code-title">YAML-LD <img class="technology-logo yaml-logo" src="images/logos/yaml.svg" alt=""></h2>
                 {{ byte_metric(metrics['02-plain.yamlld']) }}
             </div>
@@ -89,10 +84,18 @@
         <aside>14–16 min. The JSON-only braces, brackets, and commas have disappeared. The YAML-LD expands to the same RDF graph. Count includes the inline context.</aside>
     </section>
 
+    <section class="slide code-slide" id="dollar">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title">@ needs to stay quoted, $ does not</h2>
+                {{ byte_metric(metrics['03-dollar.yamlld']) }}
+            </div>
+            <div class="code-pane">{{ fragments['03-dollar.yamlld'] | safe }}</div>
+        </div>
+        <aside>16–20 min. @ must remain quoted in YAML. The imported dollar-convenience context supplies $id and $type; green marks both their uses and the context that defines them.</aside>
+    </section>
+
     <section class="slide" id="yaml-ld-specification">
-        <a class="w3c-logo-link" href="https://www.w3.org/" aria-label="World Wide Web Consortium">
-            <img class="technology-logo w3c-logo" src="images/logos/w3c.svg" alt="W3C">
-        </a>
         <h2>YAML-LD 1.0</h2>
         <p class="lede">YAML 1.2+ syntax with JSON-LD’s data and processing model</p>
         <dl class="status">
@@ -101,29 +104,64 @@
             <dt>Recommendation track</dt>
             <dd>Work in progress</dd>
         </dl>
-        <aside>16–18 min. YAML-LD 1.0 is a Working Draft on the W3C Recommendation track, published by the JSON-LD Working Group. YAML-LD mandates YAML 1.2 or a later backwards-compatible processor. Source: https://www.w3.org/TR/yaml-ld/.</aside>
+        <a class="w3c-logo-link place bottom right" href="https://www.w3.org/" aria-label="World Wide Web Consortium">
+            <img class="technology-logo w3c-logo" src="images/logos/w3c.svg" alt="W3C">
+        </a>
+        <aside>20–22 min. YAML-LD 1.0 is a Working Draft on the W3C Recommendation track, published by the JSON-LD Working Group. YAML-LD mandates YAML 1.2 or a later backwards-compatible processor. Source: https://www.w3.org/TR/yaml-ld/.</aside>
     </section>
 
-    <section class="slide code-slide" id="dollar">
-        <div class="code-frame">
-            <div class="code-info">
-                <h2 class="code-title">@ needs to stay quoted, $ does not</h2>
-                {{ byte_metric(metrics['03-dollar.yamlld']) }}
+    <section class="slide" id="norway-problem">
+        <h2>The Norway problem</h2>
+        <span class="norway-flag place bottom left" role="img" aria-label="Flag of Norway"></span>
+        <div class="columns two norway-pair">
+            <div class="norway-panel">
+                <h3>YAML-LD source</h3>
+                <div class="norway-code">{{ fragments['norway.yamlld'] | safe }}</div>
             </div>
-            <div class="code-pane">{{ fragments['03-dollar.yamlld'] | safe }}</div>
+            <div class="norway-panel">
+                <h3>YAML 1.1 would read</h3>
+                <div class="norway-code norway-legacy">{{ fragments['norway-yaml-1.1.jsonld'] | safe }}</div>
+            </div>
         </div>
-        <aside>18–22 min. @ must remain quoted in YAML. The imported dollar-convenience context supplies $id and $type; green marks both their uses and the context that defines them.</aside>
+        <aside>22–23 min. The source is valid YAML-LD, which mandates YAML 1.2. Under legacy YAML 1.1 rules, the unquoted NO value resolves to the boolean false: the Norway problem.</aside>
+    </section>
+
+    <section class="slide" id="norway">
+        <h2>NO stays a country code</h2>
+        <span class="norway-flag place bottom left" role="img" aria-label="Flag of Norway"></span>
+        <div class="columns two norway-pair">
+            <div class="norway-panel">
+                <h3>YAML-LD source</h3>
+                <div class="norway-code">{{ fragments['norway.yamlld'] | safe }}</div>
+            </div>
+            <div class="norway-panel">
+                <h3>YAML 1.2 + JSON-LD</h3>
+                <div class="norway-code">{{ fragments['norway.jsonld'] | safe }}</div>
+            </div>
+        </div>
+        <aside>23–24 min. YAML-LD uses YAML 1.2 Core Schema, so the JSON-LD value is the string “NO”. The same legacy problem affects yes, no, on, and off.</aside>
+    </section>
+
+    <section class="slide code-slide" id="mapping-keys">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title">Keys are strings</h2>
+                <p class="mapping-key-error">mapping-key-error</p>
+            </div>
+            <div class="code-pane">{{ fragments['invalid-mapping-key.yamlld'] | safe }}</div>
+        </div>
+        <aside>24–26 min. YAML accepts this triple-shaped object as a complex mapping key. YAML-LD rejects it: JSON-LD property names are strings, which may expand to RDF predicate terms. Proxima b’s discovery was announced by the team led by Guillem Anglada-Escudé in 2016. Source: https://science.nasa.gov/universe/exoplanets/eso-discovers-earth-size-planet-in-habitable-zone-of-nearest-star/.</aside>
     </section>
 
     <section class="slide code-slide" id="unicode">
         <div class="code-frame">
-            <div class="code-info">
+            <div class="code-info place bottom right">
                 <h2 class="code-title">Unicode shenanigans</h2>
                 {{ byte_metric(metrics['04-unicode.yamlld']) }}
             </div>
             <div class="code-pane">{{ fragments['04-unicode.yamlld'] | safe }}</div>
         </div>
-        <aside>22–26 min. ∈ maps to @type in the local context. One Unicode character, three UTF-8 bytes. A convention, not a recommendation.</aside>
+        <aside>26–30 min. ∈, 🏷, and 📝 are local context aliases for @type, schema:name, and schema:description. Unicode shorthand is a convention, not a recommendation.</aside>
     </section>
 
     <section class="slide" id="markdown-ld">
@@ -140,38 +178,38 @@ schema:name: Alpha Centauri
 # Alpha Centauri
 
 Alpha Centauri is the closest star system to the Solar System.</code></pre></div>
-        <aside>28–31 min. The front matter expands to the same RDF graph. Do not count the Markdown body against JSON-LD.</aside>
+        <aside>32–35 min. The front matter expands to the same RDF graph. Do not count the Markdown body against JSON-LD.</aside>
     </section>
 
     <section class="slide" id="implementations">
         <h2>Where implementations stand</h2>
-        <div class="implementation-grid">
-            <section class="implementation">
+        <div class="columns four implementation-grid">
+            <article class="implementation implementation-supported">
                 <img class="technology-logo implementation-logo" src="images/logos/rust.svg" alt="">
                 <h3><a href="https://github.com/pchampin/sophia-cli">Sophia / <code>sop</code></a></h3>
                 <p class="implementation-role">CLI</p>
-                <p>YAML-LD format support</p>
-            </section>
-            <section class="implementation">
-                <img class="technology-logo implementation-logo" src="images/logos/rust.svg" alt="">
-                <h3><a href="https://github.com/iolanta-tech/sparqld">sparqld</a></h3>
-                <p class="implementation-role">Loader</p>
-                <p>YAML-LD + Markdown-LD</p>
-            </section>
-            <section class="implementation">
-                <img class="technology-logo implementation-logo" src="images/logos/python.svg" alt="">
-                <h3><a href="https://github.com/digitalbazaar/pyld">PyLD</a></h3>
-                <p class="implementation-role">In development</p>
-                <p>YAML-LD</p>
-            </section>
-            <section class="implementation">
+                <p class="implementation-status">Supported</p>
+            </article>
+            <article class="implementation implementation-export">
                 <img class="technology-logo implementation-logo" src="images/logos/javascript.svg" alt="">
                 <h3><a href="https://json-ld.org/playground/">json-ld.org Playground</a></h3>
                 <p class="implementation-role">Browser</p>
-                <p>YAML-LD export</p>
-            </section>
+                <p class="implementation-status">Export only</p>
+            </article>
+            <article class="implementation implementation-supported">
+                <img class="technology-logo implementation-logo" src="images/logos/rust.svg" alt="">
+                <h3><a href="https://github.com/iolanta-tech/sparqld">sparqld</a></h3>
+                <p class="implementation-role">Loader</p>
+                <p class="implementation-status">Supported</p>
+            </article>
+            <article class="implementation implementation-progress">
+                <img class="technology-logo implementation-logo" src="images/logos/python.svg" alt="">
+                <h3><a href="https://github.com/digitalbazaar/pyld">PyLD</a></h3>
+                <p class="implementation-role">Python</p>
+                <p class="implementation-status">In progress</p>
+            </article>
         </div>
-        <aside>35–39 min. Sophia and sparqld use Rust. PyLD is Python. The json-ld.org Playground produces YAML-LD by serializing its JSON-LD document with YAML.stringify. The Playground evidence demonstrates export, not YAML-LD input processing by jsonld.js itself.</aside>
+        <aside>39–43 min. Sophia and sparqld use Rust. PyLD is Python. The json-ld.org Playground produces YAML-LD by serializing its JSON-LD document with YAML.stringify. Its status is export only, not YAML-LD input processing by jsonld.js itself.</aside>
     </section>
 
     <section class="slide black clear memoriam-slide" id="memoriam">
@@ -188,7 +226,30 @@ Alpha Centauri is the closest star system to the Solar System.</code></pre></div
     </section>
 
     <section class="slide" id="questions">
-        <h2 class="shout">Questions?</h2>
+        <h2>Questions?</h2>
+        <div class="columns two questions-links">
+            <a class="questions-link" href="https://www.w3.org/groups/wg/json-ld/">
+                <img src="images/qr/json-ld-working-group.svg" alt="QR code for the JSON-LD Working Group">
+                <span class="questions-link-copy">
+                    <span class="questions-link-heading">
+                        <img class="questions-organization-logo" src="images/logos/w3c.svg" alt="W3C">
+                        <strong>JSON-LD Working Group</strong>
+                    </span>
+                    <code>w3.org/groups/wg/json-ld</code>
+                </span>
+            </a>
+            <a class="questions-link" href="https://github.com/w3c/yaml-ld">
+                <img src="images/qr/yaml-ld-repository.svg" alt="QR code for the YAML-LD GitHub repository">
+                <span class="questions-link-copy">
+                    <span class="questions-link-heading">
+                        <img class="questions-organization-logo" src="images/logos/github.svg" alt="GitHub">
+                        <strong>YAML-LD repository</strong>
+                    </span>
+                    <code>github.com/w3c/yaml-ld</code>
+                </span>
+            </a>
+        </div>
+        <aside>Questions? The QR codes open the JSON-LD Working Group and the YAML-LD specification repository.</aside>
     </section>
 
     <div class="progress"></div>
