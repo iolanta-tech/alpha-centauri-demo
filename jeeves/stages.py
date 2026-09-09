@@ -48,3 +48,41 @@ def write_plain_yamlld(directory: Path) -> Path:
     dest = directory / STAGE_FILES[1]
     dest.write_text(plain_yamlld(loaded), encoding="utf-8")
     return dest
+
+
+def _norway_document(source: Path, version: tuple[int, int]) -> dict[object, object]:
+    """Load the Norway source with one explicit YAML version."""
+    yaml = YAML(typ="safe")
+    yaml.version = version
+    document = yaml.load(source.read_text(encoding="utf-8"))
+    if not isinstance(document, dict):
+        raise TypeError("Norway YAML-LD source must be an object")
+    return document
+
+
+def norway_jsonld(source: Path) -> str:
+    """Return the YAML 1.2 JSON-LD equivalent of the Norway source."""
+    document = _norway_document(source, (1, 2))
+    if document.get("country") != "NO":
+        raise ValueError("Norway YAML-LD source must preserve country as the string NO")
+    return json.dumps(document, indent=2, ensure_ascii=False) + "\n"
+
+
+def write_norway_jsonld(source: Path, destination: Path) -> Path:
+    """Materialize the JSON-LD counterpart shown beside the Norway source."""
+    destination.write_text(norway_jsonld(source), encoding="utf-8")
+    return destination
+
+
+def norway_yaml_11_jsonld(source: Path) -> str:
+    """Return the legacy YAML 1.1 interpretation used to illustrate the problem."""
+    document = _norway_document(source, (1, 1))
+    if document.get("country") is not False:
+        raise ValueError("YAML 1.1 must resolve NO as false in the Norway example")
+    return json.dumps(document, indent=2, ensure_ascii=False) + "\n"
+
+
+def write_norway_yaml_11_jsonld(source: Path, destination: Path) -> Path:
+    """Materialize the deliberately incorrect YAML 1.1 interpretation."""
+    destination.write_text(norway_yaml_11_jsonld(source), encoding="utf-8")
+    return destination
