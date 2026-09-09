@@ -143,6 +143,16 @@
         <aside>23–24 min. YAML-LD uses YAML 1.2 Core Schema, so the JSON-LD value is the string “NO”. The same legacy problem affects yes, no, on, and off.</aside>
     </section>
 
+    <section class="slide code-slide" id="yaml-comments">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title">Comments are whitespace</h2>
+            </div>
+            <div class="code-pane">{{ fragments['comments.yamlld'] | safe }}</div>
+        </div>
+        <aside>24–25 min. JSON has no comments. YAML-LD treats # as whitespace, so the planet notes never become triples. SPARQL still sees Proxima and the planets that orbit it.</aside>
+    </section>
+
     <section class="slide code-slide" id="mapping-keys">
         <div class="code-frame">
             <div class="code-info place bottom right">
@@ -151,7 +161,7 @@
             </div>
             <div class="code-pane">{{ fragments['invalid-mapping-key.yamlld'] | safe }}</div>
         </div>
-        <aside>24–26 min. YAML accepts this triple-shaped object as a complex mapping key. YAML-LD rejects it: JSON-LD property names are strings, which may expand to RDF predicate terms. Proxima b’s discovery was announced by the team led by Guillem Anglada-Escudé in 2016. Source: https://science.nasa.gov/universe/exoplanets/eso-discovers-earth-size-planet-in-habitable-zone-of-nearest-star/.</aside>
+        <aside>25–26 min. YAML accepts this triple-shaped object as a complex mapping key. YAML-LD rejects it: JSON-LD property names are strings, which may expand to RDF predicate terms. Proxima b’s discovery was announced by the team led by Guillem Anglada-Escudé in 2016. Source: https://science.nasa.gov/universe/exoplanets/eso-discovers-earth-size-planet-in-habitable-zone-of-nearest-star/.</aside>
     </section>
 
     <section class="slide code-slide" id="unicode">
@@ -162,7 +172,7 @@
             </div>
             <div class="code-pane">{{ fragments['04-unicode.yamlld'] | safe }}</div>
         </div>
-        <aside>26–30 min. ∈, 🏷, and 📝 are local context aliases for @type, schema:name, and schema:description. Unicode shorthand is a convention, not a recommendation.</aside>
+        <aside>26–30 min. ∈, 🏷, and 📝 are local context aliases for @type, name, and description. Unicode shorthand is a convention, not a recommendation.</aside>
     </section>
 
     <section class="slide" id="markdown-ld">
@@ -173,7 +183,7 @@
   "@import": https://json-ld.org/contexts/dollar-convenience.jsonld
   dbr: http://dbpedia.org/resource/
 $id: dbr:Alpha_Centauri
-schema:name: Alpha Centauri
+name: Alpha Centauri
 ---
 
 # Alpha Centauri
