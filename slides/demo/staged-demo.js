@@ -162,6 +162,8 @@ export class StagedDemo {
         window.addEventListener("keydown", this.onKeyDown, true);
         window.addEventListener("blur", this.onBlur);
         document.addEventListener("visibilitychange", this.onBlur);
+        this.resizeObserver = new ResizeObserver(this.onResize);
+        this.resizeObserver.observe(this.mount);
         this.resize();
         this.pruneLiveRegion();
         this.goTo("proxima-b", { immediate: true });
@@ -554,7 +556,7 @@ export class StagedDemo {
         if (width < 8 || height < 8) return;
         this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
-        this.renderer.setSize(width, height, false);
+        this.renderer.setSize(width, height);
         this.labels.setSize(width, height);
     }
 
@@ -593,6 +595,7 @@ export class StagedDemo {
         window.removeEventListener("keydown", this.onKeyDown, true);
         window.removeEventListener("blur", this.onBlur);
         document.removeEventListener("visibilitychange", this.onBlur);
+        this.resizeObserver.disconnect();
         this.orbitControls.dispose();
         disposeObject(this.scene);
         this.renderer.dispose();
