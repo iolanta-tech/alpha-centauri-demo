@@ -1,22 +1,29 @@
 "@context":
+  # dollar-convenience supplies $id and $type, so @ can stay unquoted
   "@import": https://json-ld.org/contexts/dollar-convenience.jsonld
   schema: https://schema.org/
   dbo: http://dbpedia.org/ontology/
   dbp: http://dbpedia.org/property/
   dbr: http://dbpedia.org/resource/
+  # name is shorthand for schema:name
   name: schema:name
+
+  # walk dbp:star backwards to the planets that orbit this star
   is-orbited-by:
     "@reverse": dbp:star
+
 # red dwarf; frequent flares
 $id: dbr:Proxima_Centauri
 $type: dbo:Star
 name: Proxima Centauri
 is-orbited-by:
+
   # possibly tidally locked; maybe rocky; mass similar to Earth
   # Located in the star's habitable zone, so might have liquid water on the surface
   - $id: dbr:Proxima_Centauri_b
     $type: dbo:Planet
     name: Proxima Centauri b
+
   # likely rocky; more like Mercury
   - $id: dbr:Proxima_Centauri_d
     $type: dbo:Planet
