@@ -1,12 +1,14 @@
 "@context":
   "@import": https://json-ld.org/contexts/dollar-convenience.jsonld
-  ∈: "@type"
-  🏷: schema:name
-  📝: schema:description
   schema: https://schema.org/
   dbo: http://dbpedia.org/ontology/
   dbp: http://dbpedia.org/property/
   dbr: http://dbpedia.org/resource/
+  name: schema:name
+  description: schema:description
+  ∈: "@type"
+  🏷: name
+  📝: description
   contains:
     "@id": schema:hasPart
     "@type": "@id"
