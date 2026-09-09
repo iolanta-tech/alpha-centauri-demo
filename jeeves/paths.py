@@ -19,7 +19,6 @@ STAGE_FILES = (
     "01-canonical.jsonld",
     "02-plain.yamlld",
     "03-dollar.yamlld",
-    "04-unicode.yamlld",
 )
 
 
