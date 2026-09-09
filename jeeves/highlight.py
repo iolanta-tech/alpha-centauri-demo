@@ -122,7 +122,7 @@ def _mark_mapping_key(markup: str) -> str:
 
 
 def highlight_stages(examples: Path) -> dict[str, str]:
-    names = [*STAGE_FILES, "markdown-ld.md"]
+    names = [*STAGE_FILES, "markdown-ld.md", "comments.yamlld"]
     fragments = {name: highlight_file(examples / name) for name in names}
     fragments["01-canonical-marked.jsonld"] = highlight_file(
         examples / "01-canonical.jsonld",
