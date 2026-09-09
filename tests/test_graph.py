@@ -14,6 +14,7 @@ def test_graph_exposes_ab_proxima_and_planets(sparqld_endpoint):
         "Proxima Centauri b",
         "Proxima Centauri d",
     }.issubset(labels)
+    assert "Centaurus" not in labels
     assert "Star" not in labels
     assert "Planet" not in labels
 
