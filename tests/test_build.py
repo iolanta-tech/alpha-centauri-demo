@@ -75,17 +75,18 @@ def test_render_writes_metrics_graph_and_fragments():
     assert '<span class="nt">"@context"</span>' in marked_slide
     assert '<span class="nt">"@id"</span>' in marked_slide
     dollar_start = deck.index('id="dollar"')
-    unicode_start = deck.index('id="unicode"')
     specification_start = deck.index('id="yaml-ld-specification"')
     norway_problem_start = deck.index('id="norway-problem"')
     norway_start = deck.index('id="norway"')
     comments_start = deck.index('id="yaml-comments"')
     mapping_keys_start = deck.index('id="mapping-keys"')
     markdown_start = deck.index('id="markdown-ld"')
+    assert "id=\"unicode\"" not in deck
+    assert "Unicode shenanigans" not in deck
+    assert "04-unicode.yamlld" not in deck
     assert (
         yaml_start
         < dollar_start
-        < unicode_start
         < specification_start
         < norway_problem_start
         < norway_start
@@ -105,7 +106,7 @@ def test_render_writes_metrics_graph_and_fragments():
     assert deck.count('class="columns two norway-pair"') == 2
     assert 'class="columns four implementation-grid"' in implementations_slide
     assert 'class="columns two questions-links"' in questions_slide
-    assert deck.count('class="code-info place bottom right"') == 7
+    assert deck.count('class="code-info place bottom right"') == 6
     assert "Comments are whitespace" in comments_slide
     comments_fragment = FRAGMENTS / "comments.yamlld.html"
     assert comments_fragment.exists()
@@ -119,11 +120,9 @@ def test_render_writes_metrics_graph_and_fragments():
     mapping_slide = deck[mapping_keys_start:markdown_start]
     assert "mapping-key-error" in mapping_slide
     assert "Guillem_Anglada-Escudé" in mapping_slide
-    dollar_slide = deck[dollar_start:unicode_start]
-    assert "@ needs to stay quoted, $ does not" in dollar_slide
+    dollar_slide = deck[dollar_start:specification_start]
+    assert '<span class="sigil-at">@</span> needs to stay quoted, <span class="sigil-dollar">$</span> does not' in dollar_slide
     assert dollar_slide.count("dollar-convenience") >= 2
-    unicode_slide = deck[unicode_start:specification_start]
-    assert "Unicode shenanigans" in unicode_slide
     invalid_fragment = FRAGMENTS / "invalid-mapping-key.yamlld.html"
     assert invalid_fragment.exists()
     assert 'class="mapping-key"' in invalid_fragment.read_text(encoding="utf-8")
