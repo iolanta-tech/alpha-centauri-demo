@@ -7,10 +7,6 @@ aside {
     display: none;
 }
 
-.slide h2 {
-    font-size: 42px;
-}
-
 .technology-logo {
     display: inline-block;
     object-fit: contain;
@@ -77,7 +73,7 @@ aside {
     position: static;
     margin: 0;
     color: #454c56;
-    font-size: 42px;
+    font-size: 50px;
     line-height: 1.1;
     text-align: right;
 }
@@ -90,11 +86,9 @@ aside {
 }
 
 .slide.code-slide .code-info {
-    position: absolute;
-    right: 60px;
-    bottom: 34px;
     z-index: 2;
     width: 430px;
+    margin: 0 20px 16px 0;
 }
 
 .slide.code-slide .code-info .metric {
@@ -116,33 +110,15 @@ aside {
     background: #f8f8f8;
 }
 
-.slide.subset-slide {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+#json-subset .subset-expression {
+    white-space: nowrap;
 }
 
-#json-subset {
-    padding: 0 !important;
-}
-
-.slide.subset-slide .subset-equation {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-}
-
-.slide.subset-slide h2 {
-    margin: 0;
-    color: #253858;
-    font-size: 84px;
-    line-height: 1;
-}
-
-#json-subset .subset-logo {
-    width: 74px;
-    height: 74px;
+#json-subset .shout .subset-logo {
+    width: 0.5em;
+    height: 0.5em;
+    margin: 0 0.08em;
+    vertical-align: -0.08em;
 }
 
 #jsonld-marked .json-only-punctuation {
@@ -156,6 +132,14 @@ aside {
     text-align: center;
 }
 
+#jsonld-marked .json-only-quote {
+    border-radius: 2px;
+    background: #ffe2e0;
+    box-shadow: inset 0 -2px #d33d31;
+    color: #9d2018;
+    font-weight: bold;
+}
+
 #dollar .dollar-convenience {
     border-radius: 2px;
     background: #e2f1e8;
@@ -163,20 +147,93 @@ aside {
     font-weight: bold;
 }
 
-#yaml-ld-specification {
-    position: relative;
-}
-
 #yaml-ld-specification .w3c-logo-link {
-    position: absolute;
-    right: 76px;
-    bottom: 56px;
+    margin: 0 38px 28px 0;
 }
 
 #yaml-ld-specification .w3c-logo {
     display: block;
     width: 104px;
     height: 70px;
+}
+
+#norway-problem .norway-flag,
+#norway .norway-flag {
+    width: 112px;
+    height: 82px;
+    margin: 0 0 28px 38px;
+    background:
+        linear-gradient(to bottom, transparent 0 35%, #fff 35% 42%, #00205b 42% 58%, #fff 58% 65%, transparent 65%),
+        linear-gradient(to right, transparent 0 25%, #fff 25% 34%, #00205b 34% 52%, #fff 52% 61%, transparent 61%),
+        #ba0c2f;
+}
+
+#norway-problem .norway-pair,
+#norway .norway-pair {
+    min-width: 0;
+}
+
+#norway-problem .norway-panel,
+#norway .norway-panel {
+    min-width: 0;
+    padding: 14px 18px;
+    background: #f8f8f8;
+}
+
+#norway-problem .norway-panel h3,
+#norway .norway-panel h3 {
+    margin: 0 0 12px;
+    color: #454c56;
+    font-size: 21px;
+    line-height: 1;
+}
+
+#norway-problem .norway-code,
+#norway .norway-code {
+    overflow: hidden;
+    color: #202b3c;
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+#norway-problem .norway-code pre,
+#norway .norway-code pre {
+    margin: 0;
+    font-family: "PT Mono", "DejaVu Sans Mono", monospace;
+}
+
+#norway-problem .norway-code pre code,
+#norway .norway-code pre code {
+    width: auto;
+    margin-left: 0;
+    padding: 0;
+}
+
+#norway-problem .norway-legacy .kc,
+#norway .norway-legacy .kc {
+    color: #b42318;
+    font-weight: bold;
+}
+
+#mapping-keys .mapping-key {
+    display: inline-block;
+    margin-left: -8px;
+    padding: 0 8px;
+    background: #ffe2e0;
+    box-shadow: inset 3px 0 #d33d31;
+}
+
+#mapping-keys .mapping-key-error {
+    margin: 12px 0 0;
+    color: #b42318;
+    font-family: "PT Mono", "DejaVu Sans Mono", monospace;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: right;
+}
+
+#mapping-keys .code-pane {
+    font-size: 11px;
 }
 
 #markdown-ld .markdown-logo {
@@ -189,6 +246,61 @@ aside {
 .slide .markdown-example {
     max-height: 300px;
     overflow: hidden;
+}
+
+#questions .questions-links {
+    min-width: 0;
+}
+
+#questions .questions-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 22px;
+    background: none;
+    color: #253858;
+    text-decoration: none;
+    text-align: center;
+}
+
+#questions .questions-link img {
+    width: 156px;
+    height: 156px;
+    background: #fff;
+}
+
+#questions .questions-link-copy {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+    align-self: stretch;
+    justify-items: start;
+    text-align: left;
+}
+
+#questions .questions-link-heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+#questions .questions-link-heading .questions-organization-logo {
+    width: 28px;
+    height: 28px;
+    background: none;
+}
+
+#questions .questions-link-copy strong {
+    font-size: 26px;
+    line-height: 1.08;
+}
+
+#questions .questions-link-copy code {
+    color: #454c56;
+    font-size: 16px;
+    overflow-wrap: anywhere;
 }
 
 #graph-slide {
@@ -404,26 +516,17 @@ aside {
 }
 
 #implementations .implementation-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    margin-top: 52px;
+    grid-column-gap: 22px;
 }
 
 #implementations .implementation {
+    --implementation-status: #137333;
+    --implementation-status-text: #fff;
+    min-height: 360px;
     min-width: 0;
-    padding: 0 22px;
-}
-
-#implementations .implementation + .implementation {
-    border-left: 1px solid #d4d8df;
-}
-
-#implementations .implementation:first-child {
-    padding-left: 0;
-}
-
-#implementations .implementation:last-child {
-    padding-right: 0;
+    padding: 24px 22px 22px;
+    border-top: 8px solid var(--implementation-status);
+    background: #f8f8f8;
 }
 
 #implementations .implementation-logo {
@@ -454,10 +557,25 @@ aside {
     text-transform: uppercase;
 }
 
-#implementations .implementation > p:last-child {
-    margin: 0;
-    font-size: 21px;
-    line-height: 1.25;
+#implementations .implementation-status {
+    display: inline-block;
+    margin: 4px 0 14px;
+    padding: 4px 8px;
+    border-radius: 3px;
+    background: var(--implementation-status);
+    color: var(--implementation-status-text);
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#implementations .implementation-export {
+    --implementation-status: #2f6f9f;
+}
+
+#implementations .implementation-progress {
+    --implementation-status: #f5c542;
+    --implementation-status-text: #3c3000;
 }
 
 .status dd {
