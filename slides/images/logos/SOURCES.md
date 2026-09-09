@@ -3,6 +3,8 @@
 The `javascript.svg`, `json.svg`, `yaml.svg`, `markdown.svg`, `python.svg`, and `rust.svg` files
 come from [Simple Icons](https://simpleicons.org/), licensed CC0-1.0.
 
+`github.svg` comes from [Simple Icons](https://simpleicons.org/), licensed CC0-1.0.
+
 `json-ld.svg` is the JSON-LD mark from
 [json-ld.org](https://json-ld.org/images/json-ld-logo.svg).
 
