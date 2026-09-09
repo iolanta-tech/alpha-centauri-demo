@@ -1,0 +1,13 @@
+"@context":
+  dbp: http://dbpedia.org/property/
+  dbr: http://dbpedia.org/resource/
+  xsd: http://www.w3.org/2001/XMLSchema#
+  dbp:discovered: { "@type": xsd:date }
+  dbp:star: { "@type": "@id" }
+  dbp:discoverer: { "@type": "@id" }
+
+? { "@id": dbr:Proxima_Centauri_b,
+    dbp:star: dbr:Proxima_Centauri }
+:
+  dbp:discovered: 2016-08-24
+  dbp:discoverer: dbr:Guillem_Anglada-Escudé
