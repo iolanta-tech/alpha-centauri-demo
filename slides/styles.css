@@ -197,38 +197,57 @@ aside {
     height: 70px;
 }
 
-#norway-problem .norway-flag,
-#norway .norway-flag {
-    width: 112px;
-    height: 82px;
-    margin: 0 0 28px 38px;
+#norway-problem {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: calc(var(--progress-size) + 8px);
+}
+
+#norway-problem .norway-problem-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+}
+
+#norway-problem .shout {
+    position: static;
+    transform: none;
+    margin: 0;
+    font-size: 136px;
+}
+
+#norway-problem .norway-flag {
+    width: 240px;
+    height: 175px;
+    flex-shrink: 0;
     background:
         linear-gradient(to bottom, transparent 0 35%, #fff 35% 42%, #00205b 42% 58%, #fff 58% 65%, transparent 65%),
         linear-gradient(to right, transparent 0 25%, #fff 25% 34%, #00205b 34% 52%, #fff 52% 61%, transparent 61%),
         #ba0c2f;
 }
 
-#norway-problem .norway-pair,
+#norway-11,
+#norway {
+    display: flex;
+    align-items: center;
+}
+
+#norway-11 .norway-pair,
 #norway .norway-pair {
     min-width: 0;
 }
 
-#norway-problem .norway-panel,
+#norway-11 .norway-panel,
 #norway .norway-panel {
     min-width: 0;
     padding: 14px 18px;
     background: #f8f8f8;
 }
 
-#norway-problem .norway-panel h3,
-#norway .norway-panel h3 {
-    margin: 0 0 12px;
-    color: #454c56;
-    font-size: 21px;
-    line-height: 1;
-}
-
-#norway-problem .norway-code,
+#norway-11 .norway-code,
 #norway .norway-code {
     overflow: hidden;
     color: #202b3c;
@@ -236,34 +255,25 @@ aside {
     line-height: 1.35;
 }
 
-#norway-problem .norway-code pre,
+#norway-11 .norway-code pre,
 #norway .norway-code pre {
     margin: 0;
     font-family: "PT Mono", "DejaVu Sans Mono", monospace;
 }
 
-#norway-problem .norway-code pre code,
+#norway-11 .norway-code pre code,
 #norway .norway-code pre code {
     width: auto;
     margin-left: 0;
     padding: 0;
 }
 
-#norway-problem .norway-legacy .kc,
-#norway .norway-legacy .kc {
+#norway-11 .norway-legacy .kc {
     color: #b42318;
     font-weight: bold;
 }
 
-#mapping-keys .mapping-key {
-    display: inline-block;
-    margin-left: -8px;
-    padding: 0 8px;
-    background: #ffe2e0;
-    box-shadow: inset 3px 0 #d33d31;
-}
-
-#mapping-keys .mapping-key-error {
+.rubber-stamp {
     z-index: 3;
     width: max-content;
     margin: 0;
@@ -281,6 +291,26 @@ aside {
     text-align: center;
     transform: translate(-50%, -50%) rotate(-11deg);
     pointer-events: none;
+}
+
+.rubber-stamp-ok {
+    border-color: #2f6f9f;
+    outline-color: #2f6f9f;
+    background: rgb(247 251 255 / 94%);
+    color: #2f6f9f;
+}
+
+#norway-11 .rubber-stamp,
+#norway .rubber-stamp {
+    top: 82%;
+}
+
+#mapping-keys .mapping-key {
+    display: inline-block;
+    margin-left: -8px;
+    padding: 0 8px;
+    background: #ffe2e0;
+    box-shadow: inset 3px 0 #d33d31;
 }
 
 #yaml-comments .code-pane .c,
