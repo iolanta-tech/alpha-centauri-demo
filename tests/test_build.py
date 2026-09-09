@@ -26,6 +26,10 @@ def test_render_writes_metrics_graph_and_fragments():
     assert "Proxima Centauri" in graph
     assert 'type="importmap"' in deck
     assert 'type="module" src="talk.js"' in deck
+    title_slide = deck[deck.index('id="title"'):deck.index('id="graph-slide"')]
+    assert "Dataworthy" in title_slide
+    assert "11 Sep 2026" in title_slide
+    assert "Anatoly Scherbakov" in title_slide
     demo = (SLIDES / "demo" / "staged-demo.js").read_text(encoding="utf-8")
     assert "proxima-b-texture.png" in demo
     assert "proxima-d-texture.png" in demo

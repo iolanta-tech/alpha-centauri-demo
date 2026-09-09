@@ -17,6 +17,15 @@ aside {
     line-height: 1.35;
 }
 
+#title .title-byline {
+    position: absolute;
+    left: var(--slide-side);
+    right: var(--slide-side);
+    bottom: 48px;
+    margin: 0;
+    text-align: center;
+}
+
 .slide.code-slide .metric {
     display: flex;
     align-items: center;
