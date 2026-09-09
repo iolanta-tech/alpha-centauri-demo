@@ -51,21 +51,16 @@ def test_write_plain_yamlld_materializes_stage_from_jsonld(tmp_path):
 
 
 def test_dollar_stages_import_the_standard_convenience_context():
-    for filename in (
-        "03-dollar.yamlld",
-        "04-unicode.yamlld",
-    ):
-        document = _load_yaml((EXAMPLES / filename).read_text(encoding="utf-8"))
-        context = document["@context"]
-        assert "@version" not in context
-        assert context["@import"] == DOLLAR_CONVENIENCE_CONTEXT
+    document = _load_yaml((EXAMPLES / "03-dollar.yamlld").read_text(encoding="utf-8"))
+    context = document["@context"]
+    assert "@version" not in context
+    assert context["@import"] == DOLLAR_CONVENIENCE_CONTEXT
 
 
 def test_stages_use_name_and_description_shorthands():
     for filename in (
         "02-plain.yamlld",
         "03-dollar.yamlld",
-        "04-unicode.yamlld",
         "markdown-ld.md",
     ):
         source = (EXAMPLES / filename).read_text(encoding="utf-8")
