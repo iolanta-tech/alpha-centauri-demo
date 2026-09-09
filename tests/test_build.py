@@ -79,10 +79,12 @@ def test_render_writes_metrics_graph_and_fragments():
     specification_start = deck.index('id="yaml-ld-specification"')
     norway_problem_start = deck.index('id="norway-problem"')
     norway_start = deck.index('id="norway"')
+    comments_start = deck.index('id="yaml-comments"')
     mapping_keys_start = deck.index('id="mapping-keys"')
-    assert yaml_start < dollar_start < specification_start < norway_problem_start < norway_start < mapping_keys_start
+    assert yaml_start < dollar_start < specification_start < norway_problem_start < norway_start < comments_start < mapping_keys_start
     norway_problem_slide = deck[norway_problem_start:norway_start]
-    norway_slide = deck[norway_start:mapping_keys_start]
+    norway_slide = deck[norway_start:comments_start]
+    comments_slide = deck[comments_start:mapping_keys_start]
     assert "The Norway problem" in norway_problem_slide
     assert "YAML 1.1 would read" in norway_problem_slide
     assert '"country"</span><span class="p">:</span><span class="w"> </span><span class="kc">false' in norway_problem_slide
@@ -92,7 +94,11 @@ def test_render_writes_metrics_graph_and_fragments():
     assert deck.count('class="columns two norway-pair"') == 2
     assert 'class="columns four implementation-grid"' in implementations_slide
     assert 'class="columns two questions-links"' in questions_slide
-    assert deck.count('class="code-info place bottom right"') == 6
+    assert deck.count('class="code-info place bottom right"') == 7
+    assert "Comments are whitespace" in comments_slide
+    comments_fragment = FRAGMENTS / "comments.yamlld.html"
+    assert comments_fragment.exists()
+    assert 'class="c1"' in comments_fragment.read_text(encoding="utf-8")
     assert "country</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"l l-Scalar l-Scalar-Plain\">NO" in norway_slide
     assert '"country"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NO"' in norway_slide
     assert json.loads(NORWAY_JSONLD.read_text(encoding="utf-8"))["country"] == "NO"
