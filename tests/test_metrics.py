@@ -3,6 +3,7 @@
 from pathlib import Path
 
 from jeeves.metrics import metrics_jsonld, measure_stages, with_savings, write_metrics_jsonld
+from jeeves.paths import STAGE_FILES
 from jeeves.sparqld import metrics_from_sparqld, serve
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -49,13 +50,15 @@ def test_byte_savings_use_utf8_bytes_not_character_count():
     assert unicode_row["saved_byte_percent"] != unicode_row["saved_percent"]
 
 
-def test_previous_stage_byte_deltas_show_incremental_tradeoffs():
-    metrics = with_savings(measure_stages(PROJECT_ROOT / "examples"))
+def test_previous_stage_byte_deltas_are_adjacent_utf8_differences():
+    measured = measure_stages(PROJECT_ROOT / "examples")
+    metrics = with_savings(measured)
 
-    assert metrics["01-canonical.jsonld"]["previous_byte_delta"] is None
-    assert metrics["02-plain.yamlld"]["previous_byte_delta"] == -432
-    assert metrics["03-dollar.yamlld"]["previous_byte_delta"] == 78
-    assert metrics["04-unicode.yamlld"]["previous_byte_delta"] == -45
+    assert metrics[STAGE_FILES[0]]["previous_byte_delta"] is None
+    for previous, current in zip(STAGE_FILES, STAGE_FILES[1:]):
+        assert metrics[current]["previous_byte_delta"] == (
+            measured[current]["utf8_bytes"] - measured[previous]["utf8_bytes"]
+        )
 
 
 def test_metrics_jsonld_describes_each_stage():
