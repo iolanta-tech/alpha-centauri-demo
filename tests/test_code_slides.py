@@ -30,3 +30,33 @@ def test_dollar_title_colors_at_and_dollar_sigils():
     dollar_rule = css[dollar_start:css.index("}", dollar_start)]
     assert "color: #BA2121;" in at_rule
     assert "color: #137333;" in dollar_rule
+
+
+def test_norway_problem_flag_sits_centered_under_the_shout():
+    css = (SLIDES / "styles.css").read_text(encoding="utf-8")
+    stack_start = css.index("#norway-problem .norway-problem-stack {")
+    stack_rule = css[stack_start:css.index("}", stack_start)]
+    shout_start = css.index("#norway-problem .shout {")
+    shout_rule = css[shout_start:css.index("}", shout_start)]
+    flag_start = css.index("#norway-problem .norway-flag {")
+    flag_rule = css[flag_start:css.index("}", flag_start)]
+    assert "flex-direction: column;" in stack_rule
+    assert "align-items: center;" in stack_rule
+    assert "position: static;" in shout_rule
+    assert "width: 240px;" in flag_rule
+    assert "margin: 0 0 28px 38px;" not in flag_rule
+
+
+def test_rubber_stamp_has_fail_and_ok_variants():
+    css = (SLIDES / "styles.css").read_text(encoding="utf-8")
+    stamp_start = css.index(".rubber-stamp {")
+    stamp_rule = css[stamp_start:css.index("}", stamp_start)]
+    ok_start = css.index(".rubber-stamp-ok {")
+    ok_rule = css[ok_start:css.index("}", ok_start)]
+    assert "color: #b42318;" in stamp_rule
+    assert "rotate(-11deg)" in stamp_rule
+    assert "color: #2f6f9f;" in ok_rule
+    assert "#mapping-keys .mapping-key-error {" not in css
+    norway_11_stamp_start = css.index("#norway-11 .rubber-stamp,")
+    norway_11_stamp_rule = css[norway_11_stamp_start:css.index("}", norway_11_stamp_start)]
+    assert "top: 82%;" in norway_11_stamp_rule
