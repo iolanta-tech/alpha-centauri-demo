@@ -6,17 +6,9 @@
     "dbr": "http://dbpedia.org/resource/",
     "name": "schema:name",
     "description": "schema:description",
-    "constellation": {
-      "@id": "dbo:constellation",
-      "@type": "@id"
-    },
-    "contains": {
-      "@id": "schema:hasPart",
-      "@type": "@id"
-    },
-    "is-orbited-by": {
-      "@reverse": "dbp:star"
-    }
+    "constellation": { "@id": "dbo:constellation", "@type": "@id" },
+    "contains": { "@id": "schema:hasPart", "@type": "@id" },
+    "is-orbited-by": { "@reverse": "dbp:star" }
   },
   "@id": "dbr:Alpha_Centauri",
   "name": "Alpha Centauri",
