@@ -12,23 +12,19 @@ SCHEMA_NAME = "https://schema.org/name"
 DBO_STAR = "http://dbpedia.org/ontology/Star"
 DBO_PLANET = "http://dbpedia.org/ontology/Planet"
 DBP_STAR = "http://dbpedia.org/property/star"
-DBO_CONSTELLATION = "http://dbpedia.org/ontology/constellation"
 
 READER_LABELS = {
     DBP_STAR: "orbits",
     SCHEMA_HAS_PART: "contains",
-    DBO_CONSTELLATION: "in constellation",
 }
 
 PREDICATE_CURIES = {
     DBP_STAR: "dbp:star",
     SCHEMA_HAS_PART: "schema:hasPart",
-    DBO_CONSTELLATION: "dbo:constellation",
 }
 
 POSITIONS = {
     "http://dbpedia.org/resource/Alpha_Centauri": (0, 80, 0),
-    "http://dbpedia.org/resource/Centaurus": (-120, 95, -20),
     "http://dbpedia.org/resource/Alpha_Centauri_AB": (0, 15, 0),
     "http://dbpedia.org/resource/Alpha_Centauri_A": (-80, 5, 25),
     "http://dbpedia.org/resource/Alpha_Centauri_B": (80, 5, 25),
