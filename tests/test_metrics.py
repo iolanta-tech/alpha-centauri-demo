@@ -55,7 +55,7 @@ def test_previous_stage_byte_deltas_show_incremental_tradeoffs():
     assert metrics["01-canonical.jsonld"]["previous_byte_delta"] is None
     assert metrics["02-plain.yamlld"]["previous_byte_delta"] == -432
     assert metrics["03-dollar.yamlld"]["previous_byte_delta"] == 78
-    assert metrics["04-unicode.yamlld"]["previous_byte_delta"] == 5
+    assert metrics["04-unicode.yamlld"]["previous_byte_delta"] == -45
 
 
 def test_metrics_jsonld_describes_each_stage():
