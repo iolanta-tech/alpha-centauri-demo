@@ -95,6 +95,13 @@ aside {
     vertical-align: -0.15em;
 }
 
+#jsonld-marked .code-title-note {
+    color: #6a7078;
+    font-size: 0.52em;
+    font-weight: normal;
+    line-height: 1.2;
+}
+
 .slide.code-slide .code-info {
     z-index: 2;
     width: 430px;
@@ -134,14 +141,16 @@ aside {
 }
 
 #json-subset .subset-expression {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.12em;
     white-space: nowrap;
 }
 
 #json-subset .shout .subset-logo {
-    width: 0.5em;
-    height: 0.5em;
-    margin: 0 0.08em;
-    vertical-align: -0.08em;
+    width: auto;
+    height: 0.72em;
+    height: 1cap;
 }
 
 #jsonld-marked .json-only-punctuation {
