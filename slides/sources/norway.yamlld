@@ -1,0 +1,4 @@
+"@context":
+  country: https://schema.org/addressCountry
+"@id": https://example.org/office
+country: NO
