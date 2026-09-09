@@ -71,11 +71,12 @@ aside {
 
 .slide.code-slide {
     padding: 0 !important;
+    background: #f8f8f8;
 }
 
 .slide.code-slide .code-frame {
     position: absolute;
-    inset: 22px 40px 18px;
+    inset: 0;
 }
 
 .slide.code-slide .code-title {
@@ -97,7 +98,8 @@ aside {
 .slide.code-slide .code-info {
     z-index: 2;
     width: 430px;
-    margin: 0 20px 16px 0;
+    margin: 0 12px 12px 0;
+    background: transparent;
 }
 
 .slide.code-slide .code-info .metric {
@@ -115,8 +117,20 @@ aside {
     box-sizing: border-box;
     height: 100%;
     max-height: none;
-    padding: 16px 460px 16px 20px;
+    padding: 4px 8px;
+    overflow: auto;
+    scrollbar-width: none;
+    line-height: 1.2;
     background: #f8f8f8;
+}
+
+.slide.code-slide .code-pane pre,
+.slide.code-slide .code-pane code {
+    line-height: 1.2;
+}
+
+.slide.code-slide .code-pane::-webkit-scrollbar {
+    display: none;
 }
 
 #json-subset .subset-expression {
