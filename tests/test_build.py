@@ -81,7 +81,18 @@ def test_render_writes_metrics_graph_and_fragments():
     norway_start = deck.index('id="norway"')
     comments_start = deck.index('id="yaml-comments"')
     mapping_keys_start = deck.index('id="mapping-keys"')
-    assert yaml_start < dollar_start < specification_start < norway_problem_start < norway_start < comments_start < mapping_keys_start
+    markdown_start = deck.index('id="markdown-ld"')
+    assert (
+        yaml_start
+        < dollar_start
+        < unicode_start
+        < specification_start
+        < norway_problem_start
+        < norway_start
+        < comments_start
+        < mapping_keys_start
+        < markdown_start
+    )
     norway_problem_slide = deck[norway_problem_start:norway_start]
     norway_slide = deck[norway_start:comments_start]
     comments_slide = deck[comments_start:mapping_keys_start]
@@ -105,12 +116,14 @@ def test_render_writes_metrics_graph_and_fragments():
     assert json.loads(NORWAY_YAML_11_JSONLD.read_text(encoding="utf-8"))["country"] is False
     for name in ("norway.yamlld", "norway-yaml-1.1.jsonld", "norway.jsonld"):
         assert (FRAGMENTS / f"{name}.html").exists()
-    mapping_slide = deck[mapping_keys_start:unicode_start]
+    mapping_slide = deck[mapping_keys_start:markdown_start]
     assert "mapping-key-error" in mapping_slide
     assert "Guillem_Anglada-Escudé" in mapping_slide
     dollar_slide = deck[dollar_start:unicode_start]
     assert "@ needs to stay quoted, $ does not" in dollar_slide
     assert dollar_slide.count("dollar-convenience") >= 2
+    unicode_slide = deck[unicode_start:specification_start]
+    assert "Unicode shenanigans" in unicode_slide
     invalid_fragment = FRAGMENTS / "invalid-mapping-key.yamlld.html"
     assert invalid_fragment.exists()
     assert 'class="mapping-key"' in invalid_fragment.read_text(encoding="utf-8")
