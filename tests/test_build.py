@@ -40,7 +40,7 @@ def test_render_writes_metrics_graph_and_fragments():
     assert (SLIDES / "vendor" / "CSS2DRenderer.js").exists()
     assert 'id="graph"' in deck
     assert "graph-svg" not in deck
-    assert "JSON ⊂ YAML" in deck
+    assert "JSON ⊊ YAML" in deck
     assert 'class="shout"><span class="subset-expression"><img class="technology-logo subset-logo"' in deck
     assert 'src="images/logos/json.svg"' in deck
     assert 'src="images/logos/yaml.svg"' in deck
