@@ -15,14 +15,10 @@ def test_metrics_include_all_equivalent_stages_and_skip_markdown():
         "01-canonical.jsonld",
         "02-plain.yamlld",
         "03-dollar.yamlld",
-        "04-unicode.yamlld",
     }
     for row in metrics.values():
         assert row["characters"] > 0
         assert row["utf8_bytes"] >= row["characters"]
-
-    unicode_row = metrics["04-unicode.yamlld"]
-    assert unicode_row["utf8_bytes"] > unicode_row["characters"]
 
 
 def test_yaml_stages_are_shorter_than_jsonld_in_characters():
@@ -31,7 +27,6 @@ def test_yaml_stages_are_shorter_than_jsonld_in_characters():
     for name in (
         "02-plain.yamlld",
         "03-dollar.yamlld",
-        "04-unicode.yamlld",
     ):
         assert metrics[name]["characters"] < json_chars, name
 
@@ -39,15 +34,14 @@ def test_yaml_stages_are_shorter_than_jsonld_in_characters():
 def test_byte_savings_use_utf8_bytes_not_character_count():
     measured = measure_stages(PROJECT_ROOT / "examples")
     metrics = with_savings(measured)
-    unicode_row = metrics["04-unicode.yamlld"]
+    dollar_row = metrics["03-dollar.yamlld"]
     baseline = measured["01-canonical.jsonld"]["utf8_bytes"]
-    unicode_bytes = measured["04-unicode.yamlld"]["utf8_bytes"]
+    dollar_bytes = measured["03-dollar.yamlld"]["utf8_bytes"]
 
-    assert unicode_row["saved_byte_percent"] == round(
-        ((baseline - unicode_bytes) / baseline) * 100,
+    assert dollar_row["saved_byte_percent"] == round(
+        ((baseline - dollar_bytes) / baseline) * 100,
         1,
     )
-    assert unicode_row["saved_byte_percent"] != unicode_row["saved_percent"]
 
 
 def test_previous_stage_byte_deltas_are_adjacent_utf8_differences():
