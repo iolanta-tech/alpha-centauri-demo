@@ -11,6 +11,7 @@ jeeves-shell = {version = "2.3.4", extras = ["all"]}
 jinja2 = "*"
 pygments = "*"
 "ruamel.yaml" = "*"
+qrcode = "*"
 
 [tool.poetry.group.dev.dependencies]
 jeeves-yeti-pyproject = ">=1.0.3"
