@@ -6,9 +6,6 @@
   dbp: http://dbpedia.org/property/
   dbr: http://dbpedia.org/resource/
   description: schema:description
-  constellation:
-    "@id": dbo:constellation
-    "@type": "@id"
   contains:
     "@id": schema:hasPart
     "@type": "@id"
@@ -17,30 +14,27 @@
 $id: dbr:Alpha_Centauri
 schema:name: Alpha Centauri
 description: The closest star system to the Solar System.
-constellation:
-  $id: dbr:Centaurus
-  schema:name: Centaurus
 contains:
-  - $id: dbr:Alpha_Centauri_AB
-    schema:name: Alpha Centauri AB
-    contains:
-      - $id: dbr:Alpha_Centauri_A
-        $type: dbo:Star
-        schema:name: Alpha Centauri A
-      - $id: dbr:Alpha_Centauri_B
-        $type: dbo:Star
-        schema:name: Alpha Centauri B
-    is-orbited-by:
-      - $id: dbr:Proxima_Centauri
-        $type: dbo:Star
-        schema:name: Proxima Centauri
-        is-orbited-by:
-          - $id: dbr:Proxima_Centauri_b
-            $type: dbo:Planet
-            schema:name: Proxima Centauri b
-          - $id: dbr:Proxima_Centauri_d
-            $type: dbo:Planet
-            schema:name: Proxima Centauri d
+  $id: dbr:Alpha_Centauri_AB
+  schema:name: Alpha Centauri AB
+  contains:
+    - $id: dbr:Alpha_Centauri_A
+      $type: dbo:Star
+      schema:name: Alpha Centauri A
+    - $id: dbr:Alpha_Centauri_B
+      $type: dbo:Star
+      schema:name: Alpha Centauri B
+  is-orbited-by:
+    - $id: dbr:Proxima_Centauri
+      $type: dbo:Star
+      schema:name: Proxima Centauri
+      is-orbited-by:
+        - $id: dbr:Proxima_Centauri_b
+          $type: dbo:Planet
+          schema:name: Proxima Centauri b
+        - $id: dbr:Proxima_Centauri_d
+          $type: dbo:Planet
+          schema:name: Proxima Centauri d
 ---
 
 # Alpha Centauri
