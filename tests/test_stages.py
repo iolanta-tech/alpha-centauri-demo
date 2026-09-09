@@ -17,6 +17,20 @@ def _load_yaml(text: str):
     return YAML(typ="safe").load(text)
 
 
+COMPACT_CONTEXT_TERMS = (
+    '"constellation": { "@id": "dbo:constellation", "@type": "@id" },',
+    '"contains": { "@id": "schema:hasPart", "@type": "@id" },',
+    '"is-orbited-by": { "@reverse": "dbp:star" }',
+)
+
+
+def test_canonical_context_term_definitions_are_one_line():
+    source = (EXAMPLES / STAGE_FILES[0]).read_text(encoding="utf-8")
+    for line in COMPACT_CONTEXT_TERMS:
+        assert line in source
+    assert '\n    "@id": "dbr:Centaurus",\n    "name": "Centaurus"\n' in source
+
+
 def test_plain_yamlld_round_trips_canonical_jsonld():
     canonical = json.loads((EXAMPLES / STAGE_FILES[0]).read_text(encoding="utf-8"))
     dumped = plain_yamlld(canonical)
