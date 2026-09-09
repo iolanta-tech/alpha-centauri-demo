@@ -111,6 +111,16 @@ test("planet standoffs look at the globe centre from several radii", () => {
     }
 });
 
+test("planet close-ups centre their selected globe", () => {
+    for (const id of ["proxima-b", "proxima-d"]) {
+        const pose = standoffPose(id);
+        const ndc = ndcOnScreen(pose.position, pose.target, body(id).position);
+        assert.ok(ndc.inFront, id);
+        assert.ok(Math.abs(ndc.x) < 1e-12, `${id} x: ${ndc.x}`);
+        assert.ok(Math.abs(ndc.y) < 1e-12, `${id} y: ${ndc.y}`);
+    }
+});
+
 test("Proxima appears larger from d than from b", () => {
     const fromB = angularDiameter(body("proxima").radius, hypot3(sub(body("proxima").position, standoffPose("proxima-b").position)));
     const fromD = angularDiameter(body("proxima").radius, hypot3(sub(body("proxima").position, standoffPose("proxima-d").position)));
