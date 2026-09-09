@@ -18,7 +18,6 @@ def _load_yaml(text: str):
 
 
 COMPACT_CONTEXT_TERMS = (
-    '"constellation": { "@id": "dbo:constellation", "@type": "@id" },',
     '"contains": { "@id": "schema:hasPart", "@type": "@id" },',
     '"is-orbited-by": { "@reverse": "dbp:star" }',
 )
@@ -28,7 +27,10 @@ def test_canonical_context_term_definitions_are_one_line():
     source = (EXAMPLES / STAGE_FILES[0]).read_text(encoding="utf-8")
     for line in COMPACT_CONTEXT_TERMS:
         assert line in source
-    assert '\n    "@id": "dbr:Centaurus",\n    "name": "Centaurus"\n' in source
+    assert "Centaurus" not in source
+    assert "dbo:constellation" not in source
+    assert '"contains": {\n    "@id": "dbr:Alpha_Centauri_AB"' in source
+    assert '"contains": [\n    {\n      "@id": "dbr:Alpha_Centauri_AB"' not in source
 
 
 def test_plain_yamlld_round_trips_canonical_jsonld():
