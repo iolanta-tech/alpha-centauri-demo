@@ -12,6 +12,14 @@ DEFAULT_PORT = 8765
 HOST = "0.0.0.0"
 
 
+class DeckRequestHandler(SimpleHTTPRequestHandler):
+    """Serve the mutable local deck without retaining stale assets."""
+
+    def end_headers(self) -> None:
+        self.send_header("Cache-Control", "no-store")
+        super().end_headers()
+
+
 def serve(port: int = DEFAULT_PORT) -> None:  # pragma: nocover
     """Serve the Shower deck.
 
@@ -19,7 +27,7 @@ def serve(port: int = DEFAULT_PORT) -> None:  # pragma: nocover
     """
     console.print(f"http://{HOST}:{port}/index.html")
     request_handler = partial(
-        SimpleHTTPRequestHandler,
+        DeckRequestHandler,
         directory=str(SLIDES),
     )
     ThreadingHTTPServer((HOST, port), request_handler).serve_forever()
