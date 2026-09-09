@@ -96,6 +96,16 @@
         <aside>16–20 min. @ must remain quoted in YAML. The imported dollar-convenience context supplies $id and $type; green marks both their uses and the context that defines them.</aside>
     </section>
 
+    <section class="slide code-slide" id="yaml-comments">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title">Comments</h2>
+            </div>
+            <div class="code-pane">{{ fragments['comments.yamlld'] | safe }}</div>
+        </div>
+        <aside>20–21 min. JSON has no comments. YAML-LD treats # as whitespace, so the planet notes never become triples.</aside>
+    </section>
+
     <section class="slide" id="yaml-ld-specification">
         <h2>YAML-LD 1.0</h2>
         <p class="lede">YAML 1.2+ syntax with JSON-LD’s data and processing model</p>
@@ -108,7 +118,7 @@
         <a class="w3c-logo-link place bottom right" href="https://www.w3.org/" aria-label="World Wide Web Consortium">
             <img class="technology-logo w3c-logo" src="images/logos/w3c.svg" alt="W3C">
         </a>
-        <aside>20–22 min. YAML-LD 1.0 is a Working Draft on the W3C Recommendation track, published by the JSON-LD Working Group. YAML-LD mandates YAML 1.2 or a later backwards-compatible processor. Source: https://www.w3.org/TR/yaml-ld/.</aside>
+        <aside>21–23 min. YAML-LD 1.0 is a Working Draft on the W3C Recommendation track, published by the JSON-LD Working Group. YAML-LD mandates YAML 1.2 or a later backwards-compatible processor. Source: https://www.w3.org/TR/yaml-ld/.</aside>
     </section>
 
     <section class="slide" id="norway-problem">
@@ -124,7 +134,7 @@
                 <div class="norway-code norway-legacy">{{ fragments['norway-yaml-1.1.jsonld'] | safe }}</div>
             </div>
         </div>
-        <aside>22–23 min. The source is valid YAML-LD, which mandates YAML 1.2. Under legacy YAML 1.1 rules, the unquoted NO value resolves to the boolean false: the Norway problem.</aside>
+        <aside>23–24 min. The source is valid YAML-LD, which mandates YAML 1.2. Under legacy YAML 1.1 rules, the unquoted NO value resolves to the boolean false: the Norway problem.</aside>
     </section>
 
     <section class="slide" id="norway">
@@ -140,17 +150,7 @@
                 <div class="norway-code">{{ fragments['norway.jsonld'] | safe }}</div>
             </div>
         </div>
-        <aside>23–24 min. YAML-LD uses YAML 1.2 Core Schema, so the JSON-LD value is the string “NO”. The same legacy problem affects yes, no, on, and off.</aside>
-    </section>
-
-    <section class="slide code-slide" id="yaml-comments">
-        <div class="code-frame">
-            <div class="code-info place bottom right">
-                <h2 class="code-title">Comments are whitespace</h2>
-            </div>
-            <div class="code-pane">{{ fragments['comments.yamlld'] | safe }}</div>
-        </div>
-        <aside>24–25 min. JSON has no comments. YAML-LD treats # as whitespace, so the planet notes never become triples. SPARQL still sees Proxima and the planets that orbit it.</aside>
+        <aside>24–25 min. YAML-LD uses YAML 1.2 Core Schema, so the JSON-LD value is the string “NO”. The same legacy problem affects yes, no, on, and off.</aside>
     </section>
 
     <section class="slide code-slide" id="mapping-keys">
