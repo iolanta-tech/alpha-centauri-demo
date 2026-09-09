@@ -16,11 +16,17 @@ from .paths import (
     GENERATED,
     METRICS_DIRECTORY,
     METRICS_FILE,
+    NORWAY_JSONLD,
+    NORWAY_SOURCE,
+    NORWAY_YAML_11_JSONLD,
+    QR_CODES,
     SLIDES,
     STAGE_FILES,
     graph_iri,
 )
 from .sparqld import assert_stages_equivalent, metrics_from_sparqld, serve
+from .qr import write_qr_codes
+from .stages import write_norway_jsonld, write_norway_yaml_11_jsonld
 
 
 def render_template(template_path: Path, output_path: Path, **payload) -> None:
@@ -38,6 +44,9 @@ def render() -> None:
     GENERATED.mkdir(exist_ok=True)
     FRAGMENTS.mkdir(parents=True, exist_ok=True)
     METRICS_DIRECTORY.mkdir(parents=True, exist_ok=True)
+    write_norway_jsonld(NORWAY_SOURCE, NORWAY_JSONLD)
+    write_norway_yaml_11_jsonld(NORWAY_SOURCE, NORWAY_YAML_11_JSONLD)
+    write_qr_codes(QR_CODES)
 
     with serve(EXAMPLES) as endpoint:
         assert_stages_equivalent(endpoint)
