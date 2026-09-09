@@ -106,9 +106,59 @@
         <aside>20–21 min. JSON has no comments. YAML-LD treats # as whitespace, so the planet notes never become triples.</aside>
     </section>
 
+    <section class="slide" id="norway-problem">
+        <div class="norway-problem-stack">
+            <h2 class="shout">The Norway problem</h2>
+            <span class="norway-flag" role="img" aria-label="Flag of Norway"></span>
+        </div>
+        <aside>21–22 min. YAML has an unquoted NO. What does a processor make of it?</aside>
+    </section>
+
+    <section class="slide" id="norway-11">
+        <p class="rubber-stamp place">YAML 1.1</p>
+        <div class="columns two norway-pair">
+            <div class="norway-panel">
+                <div class="norway-code">{{ fragments['norway.yamlld'] | safe }}</div>
+            </div>
+            <div class="norway-panel">
+                <div class="norway-code norway-legacy">{{ fragments['norway-yaml-1.1.jsonld'] | safe }}</div>
+            </div>
+        </div>
+        <aside>22–23 min. Under legacy YAML 1.1 rules, the unquoted NO value resolves to the boolean false.</aside>
+    </section>
+
+    <section class="slide" id="yaml-12-required">
+        <h2 class="shout">YAML-LD requires YAML 1.2+</h2>
+        <aside>23–24 min. YAML-LD processors must use YAML 1.2 or a later backwards-compatible specification.</aside>
+    </section>
+
+    <section class="slide" id="norway">
+        <p class="rubber-stamp rubber-stamp-ok place">YAML 1.2+</p>
+        <div class="columns two norway-pair">
+            <div class="norway-panel">
+                <div class="norway-code">{{ fragments['norway.yamlld'] | safe }}</div>
+            </div>
+            <div class="norway-panel">
+                <div class="norway-code">{{ fragments['norway.jsonld'] | safe }}</div>
+            </div>
+        </div>
+        <aside>24–25 min. YAML 1.2 Core Schema keeps the JSON-LD value as the string “NO”. The same legacy problem affects yes, no, on, and off.</aside>
+    </section>
+
+    <section class="slide code-slide" id="mapping-keys">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title">Keys are strings</h2>
+            </div>
+            <p class="mapping-key-error rubber-stamp place">mapping-key-error</p>
+            <div class="code-pane">{{ fragments['invalid-mapping-key.yamlld'] | safe }}</div>
+        </div>
+        <aside>25–26 min. YAML accepts this triple-shaped object as a complex mapping key. YAML-LD rejects it: JSON-LD property names are strings, which may expand to RDF predicate terms. Proxima b’s discovery was announced by the team led by Guillem Anglada-Escudé in 2016. Source: https://science.nasa.gov/universe/exoplanets/eso-discovers-earth-size-planet-in-habitable-zone-of-nearest-star/.</aside>
+    </section>
+
     <section class="slide" id="yaml-ld-specification">
         <h2>YAML-LD 1.0</h2>
-        <p class="lede">YAML 1.2+ syntax with JSON-LD’s data and processing model</p>
+        <p class="lede">JSON-LD’s data and processing model</p>
         <dl class="status">
             <dt>W3C Working Draft</dt>
             <dd>26 August 2026</dd>
@@ -118,50 +168,7 @@
         <a class="w3c-logo-link place bottom right" href="https://www.w3.org/" aria-label="World Wide Web Consortium">
             <img class="technology-logo w3c-logo" src="images/logos/w3c.svg" alt="W3C">
         </a>
-        <aside>21–23 min. YAML-LD 1.0 is a Working Draft on the W3C Recommendation track, published by the JSON-LD Working Group. YAML-LD mandates YAML 1.2 or a later backwards-compatible processor. Source: https://www.w3.org/TR/yaml-ld/.</aside>
-    </section>
-
-    <section class="slide" id="norway-problem">
-        <h2>The Norway problem</h2>
-        <span class="norway-flag place bottom left" role="img" aria-label="Flag of Norway"></span>
-        <div class="columns two norway-pair">
-            <div class="norway-panel">
-                <h3>YAML-LD source</h3>
-                <div class="norway-code">{{ fragments['norway.yamlld'] | safe }}</div>
-            </div>
-            <div class="norway-panel">
-                <h3>YAML 1.1 would read</h3>
-                <div class="norway-code norway-legacy">{{ fragments['norway-yaml-1.1.jsonld'] | safe }}</div>
-            </div>
-        </div>
-        <aside>23–24 min. The source is valid YAML-LD, which mandates YAML 1.2. Under legacy YAML 1.1 rules, the unquoted NO value resolves to the boolean false: the Norway problem.</aside>
-    </section>
-
-    <section class="slide" id="norway">
-        <h2>NO stays a country code</h2>
-        <span class="norway-flag place bottom left" role="img" aria-label="Flag of Norway"></span>
-        <div class="columns two norway-pair">
-            <div class="norway-panel">
-                <h3>YAML-LD source</h3>
-                <div class="norway-code">{{ fragments['norway.yamlld'] | safe }}</div>
-            </div>
-            <div class="norway-panel">
-                <h3>YAML 1.2 + JSON-LD</h3>
-                <div class="norway-code">{{ fragments['norway.jsonld'] | safe }}</div>
-            </div>
-        </div>
-        <aside>24–25 min. YAML-LD uses YAML 1.2 Core Schema, so the JSON-LD value is the string “NO”. The same legacy problem affects yes, no, on, and off.</aside>
-    </section>
-
-    <section class="slide code-slide" id="mapping-keys">
-        <div class="code-frame">
-            <div class="code-info place bottom right">
-                <h2 class="code-title">Keys are strings</h2>
-            </div>
-            <p class="mapping-key-error place">mapping-key-error</p>
-            <div class="code-pane">{{ fragments['invalid-mapping-key.yamlld'] | safe }}</div>
-        </div>
-        <aside>25–26 min. YAML accepts this triple-shaped object as a complex mapping key. YAML-LD rejects it: JSON-LD property names are strings, which may expand to RDF predicate terms. Proxima b’s discovery was announced by the team led by Guillem Anglada-Escudé in 2016. Source: https://science.nasa.gov/universe/exoplanets/eso-discovers-earth-size-planet-in-habitable-zone-of-nearest-star/.</aside>
+        <aside>26–28 min. YAML-LD 1.0 is a Working Draft on the W3C Recommendation track, published by the JSON-LD Working Group. Source: https://www.w3.org/TR/yaml-ld/.</aside>
     </section>
 
     <section class="slide" id="markdown-ld">
