@@ -7,7 +7,7 @@ import re
 from jeeves.paths import EXAMPLES
 from jeeves.sparqld import load_errors, triples
 
-COMMENT_WORDS = ("tidally", "rocky", "Earth", "Mercury", "flares")
+COMMENT_WORDS = ("tidally", "rocky", "Earth", "Mercury", "flares", "unquoted", "shorthand", "backwards")
 NODE_KEY = re.compile(r"^\s*(\$\w+|name)\s*:")
 
 
@@ -45,6 +45,24 @@ def test_comments_source_focuses_on_proxima_planets():
     assert "Alpha Centauri A" not in source
     for word in COMMENT_WORDS:
         assert word in source, word
+
+
+def test_context_comments_explain_local_aliases():
+    lines = _source_lines()
+    body = next(i for i, line in enumerate(lines) if line.startswith("$id:"))
+    comments = [line for line in lines[:body] if re.match(r"^\s*#", line)]
+    assert len(comments) >= 3
+    blob = "\n".join(comments)
+    assert "dollar-convenience" in blob
+    assert "unquoted" in blob
+    assert "shorthand" in blob
+    assert "backwards" in blob
+
+
+def test_comments_source_has_blank_lines_around_blocks():
+    source = (EXAMPLES / "comments.yamlld").read_text(encoding="utf-8")
+    assert '"@reverse": dbp:star\n\n#' in source
+    assert "name: Proxima Centauri b\n\n" in source
 
 
 def test_comment_text_is_not_in_the_rdf_graph(sparqld_endpoint):
