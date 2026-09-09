@@ -76,7 +76,7 @@ aside {
 
 .slide.code-slide .code-frame {
     position: absolute;
-    inset: 0;
+    inset: 0 0 calc(var(--progress-size) + 8px);
 }
 
 .slide.code-slide .code-title {
@@ -177,6 +177,14 @@ aside {
     background: #e2f1e8;
     color: #137333;
     font-weight: bold;
+}
+
+#dollar .code-title .sigil-at {
+    color: #BA2121;
+}
+
+#dollar .code-title .sigil-dollar {
+    color: #137333;
 }
 
 #yaml-ld-specification .w3c-logo-link {
