@@ -256,16 +256,23 @@ aside {
 }
 
 #mapping-keys .mapping-key-error {
-    margin: 12px 0 0;
+    z-index: 3;
+    width: max-content;
+    margin: 0;
+    padding: 16px 28px;
+    border: 5px solid #b42318;
+    outline: 3px solid #b42318;
+    outline-offset: 6px;
+    background: rgb(255 248 247 / 94%);
     color: #b42318;
     font-family: "PT Mono", "DejaVu Sans Mono", monospace;
-    font-size: 22px;
+    font-size: 44px;
     font-weight: bold;
-    text-align: right;
-}
-
-#mapping-keys .code-pane {
-    font-size: 11px;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-align: center;
+    transform: translate(-50%, -50%) rotate(-11deg);
+    pointer-events: none;
 }
 
 #yaml-comments .code-pane .c,
