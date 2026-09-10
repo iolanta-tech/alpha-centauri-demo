@@ -1,5 +1,5 @@
 "@context":
-  # dollar-convenience supplies $id and $type, so @ can stay unquoted
+  # dollar-convenience supplies $id and $type, so they can stay unquoted
   "@import": https://json-ld.org/contexts/dollar-convenience.jsonld
   schema: https://schema.org/
   dbo: http://dbpedia.org/ontology/
