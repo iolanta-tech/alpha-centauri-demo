@@ -179,6 +179,13 @@ aside {
     font-weight: bold;
 }
 
+#anchors-aliases .anchor-alias {
+    border-radius: 2px;
+    background: #e2f1e8;
+    color: #137333;
+    font-weight: bold;
+}
+
 #dollar .code-title .sigil-at {
     color: #BA2121;
 }
