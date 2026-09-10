@@ -171,23 +171,6 @@
         <aside>26–28 min. YAML-LD 1.0 is a Working Draft on the W3C Recommendation track, published by the JSON-LD Working Group. Source: https://www.w3.org/TR/yaml-ld/.</aside>
     </section>
 
-    <section class="slide" id="markdown-ld">
-        <h2>Markdown-LD <img class="technology-logo markdown-logo" src="images/logos/markdown.svg" alt=""></h2>
-        <p class="lede">YAML-LD front matter carries the graph. Markdown carries the reader-facing explanation.</p>
-        <div class="code-pane markdown-example"><pre><code>---
-"@context":
-  "@import": https://json-ld.org/contexts/dollar-convenience.jsonld
-  dbr: http://dbpedia.org/resource/
-$id: dbr:Alpha_Centauri
-name: Alpha Centauri
----
-
-# Alpha Centauri
-
-Alpha Centauri is the closest star system to the Solar System.</code></pre></div>
-        <aside>32–35 min. The front matter expands to the same RDF graph. Do not count the Markdown body against JSON-LD.</aside>
-    </section>
-
     <section class="slide" id="implementations">
         <h2>Where implementations stand</h2>
         <div class="columns four implementation-grid">
@@ -230,6 +213,31 @@ Alpha Centauri is the closest star system to the Solar System.</code></pre></div
             <img src="images/gregg-kellogg.jpg" alt="Portrait of Gregg Kellogg">
         </figure>
         <aside>Do not rush this slide. Portrait source: https://greggkellogg.net/foaf, retrieved 2026-09-07.</aside>
+    </section>
+
+    <section class="slide" id="bonus">
+        <h2 class="shout">Bonus</h2>
+        <aside>43–44 min. Extra material after the main thread.</aside>
+    </section>
+
+    <section class="slide code-slide" id="markdown">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title">Markdown <img class="technology-logo markdown-logo" src="images/logos/markdown.svg" alt=""></h2>
+            </div>
+            <div class="code-pane">{{ fragments['proxima.md'] | safe }}</div>
+        </div>
+        <aside>44–45 min. Ordinary Markdown: headings and paragraphs for people, not for the graph.</aside>
+    </section>
+
+    <section class="slide code-slide" id="markdown-ld">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title">Markdown-LD <img class="technology-logo markdown-logo" src="images/logos/markdown.svg" alt=""></h2>
+            </div>
+            <div class="code-pane">{{ fragments['markdown-ld.md'] | safe }}</div>
+        </div>
+        <aside>45–47 min. YAML-LD front matter carries the graph. The Markdown body is the same kind of unstructured text the Comments slide put in # notes, and it does not become triples.</aside>
     </section>
 
     <section class="slide" id="questions">
