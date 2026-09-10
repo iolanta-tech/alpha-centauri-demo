@@ -141,6 +141,17 @@ def _mark_dollar_convenience(markup: str) -> str:
     return markup
 
 
+def _mark_anchors_and_aliases(markup: str) -> str:
+    """Emphasize the anchor and aliases used to reuse an IRI term definition."""
+    replacements = (
+        ('<span class="nl">&amp;iri</span>', '<span class="nl anchor-alias">&amp;iri</span>'),
+        ('<span class="nv">*iri</span>', '<span class="nv anchor-alias">*iri</span>'),
+    )
+    for original, replacement in replacements:
+        markup = markup.replace(original, replacement)
+    return markup
+
+
 def _mark_mapping_key(markup: str) -> str:
     """Mark the two-line complex YAML key in the negative teaching fixture."""
     lines = markup.splitlines()
@@ -154,7 +165,7 @@ def _mark_mapping_key(markup: str) -> str:
 
 
 def highlight_stages(examples: Path) -> dict[str, str]:
-    names = [*STAGE_FILES, "comments.yamlld"]
+    names = [*STAGE_FILES, "comments.yamlld", "context-anchors.yamlld"]
     fragments = {name: highlight_file(examples / name) for name in names}
     fragments["proxima.md"] = highlight_file(PROXIMA_MD)
     fragments["markdown-ld.md"] = highlight_markdown_with_front_matter(
@@ -167,6 +178,9 @@ def highlight_stages(examples: Path) -> dict[str, str]:
     fragments["03-dollar.yamlld"] = highlight_file(
         examples / "03-dollar.yamlld",
         mark_dollar_convenience=True,
+    )
+    fragments["context-anchors.yamlld"] = _mark_anchors_and_aliases(
+        highlight_file(examples / "context-anchors.yamlld"),
     )
     fragments["invalid-mapping-key.yamlld"] = highlight_file(
         TEST_FIXTURES / "invalid-mapping-key.yamlld",
