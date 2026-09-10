@@ -121,19 +121,18 @@ def test_render_writes_metrics_graph_and_fragments():
     assert 'class="norway-flag"' in norway_problem_slide
     assert "place bottom left" not in norway_problem_slide
     assert "YAML 1.1 would read" not in norway_problem_slide
-    assert "YAML-LD source" not in norway_11_slide
-    assert "YAML 1.1 would read" not in norway_11_slide
-    assert 'class="rubber-stamp place">YAML 1.1</p>' in norway_11_slide
-    assert '"country"</span><span class="p">:</span><span class="w"> </span><span class="kc">false' in norway_11_slide
-    assert "YAML 1.2 + JSON-LD" not in norway_slide
-    assert 'class="rubber-stamp rubber-stamp-ok place">YAML 1.2+</p>' in norway_slide
-    assert '"country"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NO"' in norway_slide
+    assert 'class="norway-version">YAML 1.1</p>' in norway_11_slide
+    assert 'class="norway-comparison"' in norway_11_slide
+    assert 'class="norway-value">false</strong>' in norway_11_slide
+    assert 'class="norway-version">YAML 1.2+</p>' in norway_slide
+    assert 'class="norway-comparison"' in norway_slide
+    assert 'class="norway-value">&quot;NO&quot;</strong>' in norway_slide
     assert 'class="norway-flag' not in norway_slide
     assert 'class="shout">YAML-LD requires YAML 1.2+</h2>' in yaml_12_slide
     assert "YAML-LD 1.0" in specification_slide
     assert "YAML 1.2+" not in specification_slide
     assert "JSON-LD’s data and processing model" in specification_slide
-    assert deck.count('class="columns two norway-pair"') == 2
+    assert deck.count('class="norway-comparison"') == 2
     assert 'class="columns four implementation-grid"' in implementations_slide
     assert 'class="columns two questions-links"' in questions_slide
     assert deck.count('class="code-info place bottom right"') == 8
@@ -142,8 +141,8 @@ def test_render_writes_metrics_graph_and_fragments():
     comments_fragment = FRAGMENTS / "comments.yamlld.html"
     assert comments_fragment.exists()
     assert 'class="c1"' in comments_fragment.read_text(encoding="utf-8")
-    assert "country</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"l l-Scalar l-Scalar-Plain\">NO" in norway_11_slide
-    assert '"country"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NO"' in norway_slide
+    assert '<span class="norway-field">country:</span> NO' in norway_11_slide
+    assert '<span class="norway-field">country:</span> NO' in norway_slide
     assert json.loads(NORWAY_JSONLD.read_text(encoding="utf-8"))["country"] == "NO"
     assert json.loads(NORWAY_YAML_11_JSONLD.read_text(encoding="utf-8"))["country"] is False
     for name in ("norway.yamlld", "norway-yaml-1.1.jsonld", "norway.jsonld"):
