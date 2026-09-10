@@ -187,8 +187,63 @@ aside {
     color: #137333;
 }
 
-#yaml-ld-specification .w3c-logo-link {
-    margin: 0 38px 28px 0;
+#yaml-ld-specification .specification-reference {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 46px;
+    margin: 36px auto 0;
+}
+
+#yaml-ld-specification .specification-status-card {
+    width: 490px;
+    padding: 32px 38px;
+    text-align: center;
+}
+
+#yaml-ld-specification .specification-status-card .w3c-logo {
+    margin: 0 auto 22px;
+}
+
+#yaml-ld-specification .specification-status-label {
+    margin: 0;
+    color: #202b3c;
+    font-size: 42px;
+    font-weight: bold;
+    line-height: 1.1;
+}
+
+#yaml-ld-specification .specification-status-detail {
+    margin: 14px 0 0;
+    color: #58616d;
+    font-size: 24px;
+    line-height: 1.2;
+}
+
+#yaml-ld-specification .specification-qr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #58616d;
+    font-family: "PT Mono", "DejaVu Sans Mono", monospace;
+    text-decoration: none;
+}
+
+#yaml-ld-specification .specification-qr img {
+    display: block;
+    width: 172px;
+    height: 172px;
+    margin-top: 16px;
+    padding: 8px;
+    background: #fff;
+}
+
+#yaml-ld-specification .specification-qr code {
+    background: transparent;
+    color: #2f6f9f;
+    font-size: 22px;
+    font-weight: bold;
 }
 
 #yaml-ld-specification .w3c-logo {
