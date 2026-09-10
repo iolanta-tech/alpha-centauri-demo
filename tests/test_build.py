@@ -55,7 +55,11 @@ def test_render_writes_metrics_graph_and_fragments():
     questions_start = deck.index('id="questions"')
     questions_slide = deck[questions_start:]
     assert "https://www.w3.org/groups/wg/json-ld/" in questions_slide
+    assert "https://www.w3.org/TR/yaml-ld/" in questions_slide
     assert "https://github.com/w3c/yaml-ld" in questions_slide
+    assert 'src="images/qr/yaml-ld-specification.svg"' in questions_slide
+    assert "<strong>GitHub</strong>" in questions_slide
+    assert "YAML-LD repository" not in questions_slide
     for filename in (
         "json-ld-working-group.svg",
         "yaml-ld-specification.svg",
@@ -89,6 +93,7 @@ def test_render_writes_metrics_graph_and_fragments():
     markdown_start = deck.index('id="markdown"')
     markdown_ld_start = deck.index('id="markdown-ld"')
     memoriam_start = deck.index('id="memoriam"')
+    acknowledgements_start = deck.index('id="acknowledgements"')
     bonus_start = deck.index('id="bonus"')
     assert "id=\"unicode\"" not in deck
     assert "Unicode shenanigans" not in deck
@@ -105,6 +110,7 @@ def test_render_writes_metrics_graph_and_fragments():
         < specification_start
         < implementations_start
         < memoriam_start
+        < acknowledgements_start
         < bonus_start
         < markdown_start
         < markdown_ld_start
@@ -138,12 +144,11 @@ def test_render_writes_metrics_graph_and_fragments():
     assert "W3C specification status" not in specification_slide
     assert 'class="specification-status-label">W3C Working Draft</p>' in specification_slide
     assert "Recommendation track" in specification_slide
-    assert 'href="https://www.w3.org/TR/yaml-ld/"' in specification_slide
-    assert "w3.org/TR/yaml-ld/" in specification_slide
-    assert 'src="images/qr/yaml-ld-specification.svg"' in specification_slide
+    assert 'class="specification-qr"' not in specification_slide
+    assert 'src="images/qr/yaml-ld-specification.svg"' not in specification_slide
     assert deck.count('class="norway-comparison"') == 2
     assert 'class="columns four implementation-grid"' in implementations_slide
-    assert 'class="columns two questions-links"' in questions_slide
+    assert 'class="columns three questions-links"' in questions_slide
     assert deck.count('class="code-info place bottom right"') == 8
     assert "Comments are whitespace" not in deck
     assert ">Comments</h2>" in comments_slide
@@ -166,6 +171,7 @@ def test_render_writes_metrics_graph_and_fragments():
     assert 'class="shout">Bonus</h2>' in bonus_slide
     assert 'class="slide code-slide" id="markdown-ld"' in deck
     assert 'class="code-title">Markdown-LD ' in markdown_ld_slide
+    assert markdown_ld_slide.count('class="front-matter-separator"') == 2
     assert "$id" in markdown_ld_slide
     assert "markdown-example" not in markdown_ld_slide
     assert '<p class="lede">YAML-LD front matter carries the graph' not in markdown_ld_slide
@@ -183,3 +189,52 @@ def test_render_writes_metrics_graph_and_fragments():
         html = fragment.read_text(encoding="utf-8")
         assert html.startswith("<pre><code>"), name
         assert "</code></pre>" in html
+
+
+def test_memoriam_slide_states_passing_date_and_role():
+    render()
+    deck = (SLIDES / "index.html").read_text(encoding="utf-8")
+    slide = deck[deck.index('id="memoriam"'):deck.index('id="acknowledgements"')]
+    assert "6 September 2025" in slide
+    assert "1957" not in slide
+    assert "A central figure in JSON-LD for more than a decade." in slide
+    assert "made possible" not in slide
+
+
+def test_acknowledgements_slide_lists_working_group_contributors():
+    render()
+    deck = (SLIDES / "index.html").read_text(encoding="utf-8")
+    slide = deck[deck.index('id="acknowledgements"'):deck.index('id="bonus"')]
+    assert ">Acknowledgements</h2>" in slide
+    assert 'class="columns four acknowledgement-grid"' in slide
+    people = (
+        (
+            "https://champin.net/",
+            "Pierre-Antoine Champin",
+            "images/acknowledgements/pierre-antoine-champin.png",
+        ),
+        (
+            "https://github.com/ioggstream",
+            "Roberto Polli",
+            "images/acknowledgements/roberto-polli.jpg",
+        ),
+        (
+            "https://github.com/TallTed",
+            "Ted Thibodeau Jr",
+            "images/acknowledgements/ted-thibodeau.png",
+        ),
+        (
+            "https://bigbluehat.com/",
+            "Benjamin Young",
+            "images/acknowledgements/benjamin-young.jpg",
+        ),
+    )
+    positions = []
+    for href, name, src in people:
+        assert f'<a href="{href}">{name}</a>' in slide
+        assert src in slide
+        assert (SLIDES / src).exists(), src
+        positions.append(slide.index(name))
+    assert positions == sorted(positions)
+    assert "Gregg" not in slide
+    assert "Anatoly" not in slide
