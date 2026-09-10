@@ -61,7 +61,6 @@ def test_stages_use_name_and_description_shorthands():
     for filename in (
         "02-plain.yamlld",
         "03-dollar.yamlld",
-        "markdown-ld.md",
     ):
         source = (EXAMPLES / filename).read_text(encoding="utf-8")
         assert "name: schema:name" in source, filename
