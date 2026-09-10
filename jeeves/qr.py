@@ -8,9 +8,7 @@ import qrcode
 from qrcode.image.svg import SvgPathImage
 
 QR_LINKS = {
-    "json-ld-working-group.svg": "https://www.w3.org/groups/wg/json-ld/",
-    "yaml-ld-specification.svg": "https://www.w3.org/TR/yaml-ld/",
-    "yaml-ld-repository.svg": "https://github.com/w3c/yaml-ld",
+    "alpha-centauri-demo.svg": "https://alpha-centauri-demo.iolanta.tech/",
 }
 
 
