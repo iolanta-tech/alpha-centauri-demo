@@ -55,6 +55,8 @@ def test_context_comments_explain_local_aliases():
     blob = "\n".join(comments)
     assert "dollar-convenience" in blob
     assert "unquoted" in blob
+    assert "$id and $type, so they can stay unquoted" in blob
+    assert "@ can stay unquoted" not in blob
     assert "shorthand" in blob
     assert "backwards" in blob
 
