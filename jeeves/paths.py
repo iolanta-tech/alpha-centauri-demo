@@ -13,6 +13,7 @@ METRICS_FILE = METRICS_DIRECTORY / "metrics.jsonld"
 SLIDES = ROOT / "slides"
 QR_CODES = SLIDES / "images" / "qr"
 NORWAY_SOURCE = SLIDES / "sources" / "norway.yamlld"
+PROXIMA_MD = SLIDES / "sources" / "proxima.md"
 NORWAY_JSONLD = GENERATED / "norway.jsonld"
 NORWAY_YAML_11_JSONLD = GENERATED / "norway-yaml-1.1.jsonld"
 STAGE_FILES = (
