@@ -54,16 +54,27 @@ def test_render_writes_metrics_graph_and_fragments():
     assert "In progress" in implementations_slide
     questions_start = deck.index('id="questions"')
     questions_slide = deck[questions_start:]
+    assert "https://alpha-centauri-demo.iolanta.tech/" in questions_slide
     assert "https://www.w3.org/groups/wg/json-ld/" in questions_slide
     assert "https://www.w3.org/TR/yaml-ld/" in questions_slide
     assert "https://github.com/w3c/yaml-ld" in questions_slide
-    assert 'src="images/qr/yaml-ld-specification.svg"' in questions_slide
+    assert questions_slide.count('images/qr/') == 1
+    assert 'src="images/qr/alpha-centauri-demo.svg"' in questions_slide
+    assert questions_slide.count('class="questions-presentation-link"') == 1
+    presentation_link_start = questions_slide.index('class="questions-presentation-link"')
+    presentation_link = questions_slide[
+        presentation_link_start : questions_slide.index("</a>", presentation_link_start)
+    ]
+    assert 'href="https://alpha-centauri-demo.iolanta.tech/"' in presentation_link
+    assert "<code>alpha-centauri-demo.iolanta.tech</code>" in presentation_link
+    assert 'class="questions-resource-list"' in questions_slide
+    assert questions_slide.count("<li>") == 3
+    assert questions_slide.count('src="images/logos/w3c.svg"') == 2
+    assert questions_slide.count('src="images/logos/github.svg"') == 1
     assert "<strong>GitHub</strong>" in questions_slide
     assert "YAML-LD repository" not in questions_slide
     for filename in (
-        "json-ld-working-group.svg",
-        "yaml-ld-specification.svg",
-        "yaml-ld-repository.svg",
+        "alpha-centauri-demo.svg",
     ):
         asset = QR_CODES / filename
         assert asset.exists()
@@ -151,7 +162,7 @@ def test_render_writes_metrics_graph_and_fragments():
     assert 'src="images/qr/yaml-ld-specification.svg"' not in specification_slide
     assert deck.count('class="norway-comparison"') == 2
     assert 'class="columns four implementation-grid"' in implementations_slide
-    assert 'class="columns three questions-links"' in questions_slide
+    assert 'class="columns two questions-layout"' in questions_slide
     assert deck.count('class="code-info place bottom right"') == 9
     assert "Comments are whitespace" not in deck
     assert ">Comments</h2>" in comments_slide
