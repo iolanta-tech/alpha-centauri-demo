@@ -1,0 +1,17 @@
+"@context":
+  dbo: http://dbpedia.org/ontology/
+  dbp: http://dbpedia.org/property/
+  dbr: http://dbpedia.org/resource/
+
+  # &iri labels this complete term definition
+  dbp:star:            &iri
+    "@type": "@id"
+
+  # *iri reuses it for the other IRI-valued terms
+  dbp:discoveryMethod: *iri
+  dbp:discoverySite:   *iri
+
+"@id": dbr:Proxima_Centauri_b
+dbp:star:            dbr:Proxima_Centauri
+dbp:discoveryMethod: dbr:Doppler_spectroscopy
+dbp:discoverySite:   dbr:European_Southern_Observatory
