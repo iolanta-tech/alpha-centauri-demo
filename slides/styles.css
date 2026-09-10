@@ -373,63 +373,84 @@ aside {
     font-weight: bold;
 }
 
-#questions .questions-links {
-    min-width: 0;
-    grid-column-gap: 32px;
+#questions .questions-layout {
+    align-items: center;
 }
 
-#questions .questions-link {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 4px;
-    background: none;
+#questions .questions-resource-list {
+    display: grid;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#questions .questions-resource-list li::before {
+    content: none;
+}
+
+#questions .questions-resource-link,
+#questions .questions-presentation-link {
+    background-image: none;
     color: #253858;
     text-decoration: none;
-    text-align: center;
 }
 
-#questions .questions-link img {
-    width: 140px;
-    height: 140px;
-    background: #fff;
-}
-
-#questions .questions-link-copy {
+#questions .questions-resource-link {
     display: grid;
-    gap: 10px;
-    min-width: 0;
-    align-self: stretch;
-    justify-items: center;
-    text-align: center;
-}
-
-#questions .questions-link-heading {
-    display: flex;
+    grid-template-columns: 44px minmax(0, 1fr);
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-height: 2.4em;
+    column-gap: 14px;
 }
 
-#questions .questions-link-heading .questions-organization-logo {
-    width: 24px;
-    height: 24px;
-    flex-shrink: 0;
-    background: none;
+#questions .questions-resource-logo {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
 }
 
-#questions .questions-link-copy strong {
+#questions .questions-resource-copy {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+
+#questions .questions-resource-link strong,
+#questions .questions-presentation-link strong {
     font-size: 22px;
     line-height: 1.15;
-    text-wrap: balance;
 }
 
-#questions .questions-link-copy code {
+#questions .questions-resource-link code,
+#questions .questions-presentation-link code {
     color: #454c56;
     font-size: 15px;
     overflow-wrap: anywhere;
+}
+
+#questions .questions-presentation-link {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    padding-left: 32px;
+    text-align: center;
+}
+
+#questions .questions-presentation-link > span {
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+}
+
+#questions .questions-presentation-link code {
+    white-space: nowrap;
+    overflow-wrap: normal;
+}
+
+#questions .questions-presentation-link > img {
+    width: 140px;
+    height: 140px;
+    background: #fff;
 }
 
 #graph-slide {
