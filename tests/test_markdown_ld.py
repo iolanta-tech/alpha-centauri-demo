@@ -53,6 +53,14 @@ def test_markdown_ld_highlight_uses_yaml_then_markdown():
     assert "$id" not in prose
 
 
+def test_markdown_ld_highlight_marks_front_matter_separators():
+    html = highlight_markdown_with_front_matter(MARKDOWN_LD)
+    fence = '<span class="front-matter-separator">---</span>'
+    assert html.count(fence) == 2
+    assert html.startswith(f"<pre><code>{fence}\n")
+    assert f"\n{fence}\n\n" in html
+
+
 def test_markdown_body_words_are_not_in_the_markdown_ld_graph(sparqld_endpoint):
     actual = triples(sparqld_endpoint, "markdown-ld.md")
     assert actual
