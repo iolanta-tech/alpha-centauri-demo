@@ -56,7 +56,11 @@ def test_render_writes_metrics_graph_and_fragments():
     questions_slide = deck[questions_start:]
     assert "https://www.w3.org/groups/wg/json-ld/" in questions_slide
     assert "https://github.com/w3c/yaml-ld" in questions_slide
-    for filename in ("json-ld-working-group.svg", "yaml-ld-repository.svg"):
+    for filename in (
+        "json-ld-working-group.svg",
+        "yaml-ld-specification.svg",
+        "yaml-ld-repository.svg",
+    ):
         asset = QR_CODES / filename
         assert asset.exists()
         assert "<svg" in asset.read_text(encoding="utf-8")
@@ -131,7 +135,12 @@ def test_render_writes_metrics_graph_and_fragments():
     assert 'class="shout">YAML-LD requires YAML 1.2+</h2>' in yaml_12_slide
     assert "YAML-LD 1.0" in specification_slide
     assert "YAML 1.2+" not in specification_slide
-    assert "JSON-LD’s data and processing model" in specification_slide
+    assert "W3C specification status" not in specification_slide
+    assert 'class="specification-status-label">W3C Working Draft</p>' in specification_slide
+    assert "Recommendation track" in specification_slide
+    assert 'href="https://www.w3.org/TR/yaml-ld/"' in specification_slide
+    assert "w3.org/TR/yaml-ld/" in specification_slide
+    assert 'src="images/qr/yaml-ld-specification.svg"' in specification_slide
     assert deck.count('class="norway-comparison"') == 2
     assert 'class="columns four implementation-grid"' in implementations_slide
     assert 'class="columns two questions-links"' in questions_slide
