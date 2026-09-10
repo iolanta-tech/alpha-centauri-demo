@@ -13,9 +13,20 @@ from pygments.lexers import JsonLexer, MarkdownLexer, YamlLexer
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
-from .paths import NORWAY_JSONLD, NORWAY_SOURCE, NORWAY_YAML_11_JSONLD, STAGE_FILES, TEST_FIXTURES
+from .paths import (
+    NORWAY_JSONLD,
+    NORWAY_SOURCE,
+    NORWAY_YAML_11_JSONLD,
+    PROXIMA_MD,
+    STAGE_FILES,
+    TEST_FIXTURES,
+)
 
 FORMATTER = HtmlFormatter(nowrap=True, linenos=False)
+FRONT_MATTER = re.compile(
+    r"\A---\n(?P<yaml>.*?)\n---\n(?P<body>.*)\Z",
+    re.DOTALL,
+)
 JSON_STRING_TOKEN = re.compile(
     r'(?P<opening><span class="(?P<kind>nt|s2)">)'
     r'(?P<literal>"(?:\\.|[^"\\])*")'
@@ -47,6 +58,26 @@ def highlight_file(
         inner = _mark_dollar_convenience(inner)
     if mark_mapping_key:
         inner = _mark_mapping_key(inner)
+    return f"<pre><code>{inner}\n</code></pre>\n"
+
+
+def highlight_markdown_with_front_matter(path: Path) -> str:
+    """Highlight YAML-LD fences with YamlLexer and the Markdown body separately."""
+    source = path.read_text(encoding="utf-8")
+    match = FRONT_MATTER.match(source)
+    if match is None:
+        raise ValueError(f"{path} is not Markdown with YAML-LD front matter")
+    yaml_html = highlight(
+        match.group("yaml") + "\n",
+        YamlLexer(),
+        FORMATTER,
+    ).rstrip("\n")
+    body_html = highlight(
+        match.group("body").lstrip("\n"),
+        MarkdownLexer(),
+        FORMATTER,
+    ).rstrip("\n")
+    inner = f"---\n{yaml_html}\n---\n\n{body_html}"
     return f"<pre><code>{inner}\n</code></pre>\n"
 
 
@@ -122,8 +153,12 @@ def _mark_mapping_key(markup: str) -> str:
 
 
 def highlight_stages(examples: Path) -> dict[str, str]:
-    names = [*STAGE_FILES, "markdown-ld.md", "comments.yamlld"]
+    names = [*STAGE_FILES, "comments.yamlld"]
     fragments = {name: highlight_file(examples / name) for name in names}
+    fragments["proxima.md"] = highlight_file(PROXIMA_MD)
+    fragments["markdown-ld.md"] = highlight_markdown_with_front_matter(
+        examples / "markdown-ld.md"
+    )
     fragments["01-canonical-marked.jsonld"] = highlight_file(
         examples / "01-canonical.jsonld",
         mark_json_punctuation=True,
