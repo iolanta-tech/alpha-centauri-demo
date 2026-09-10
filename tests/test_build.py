@@ -84,6 +84,7 @@ def test_render_writes_metrics_graph_and_fragments():
     assert '<span class="nt">"@id"</span>' in marked_slide
     dollar_start = deck.index('id="dollar"')
     comments_start = deck.index('id="yaml-comments"')
+    anchors_aliases_start = deck.index('id="anchors-aliases"')
     norway_problem_start = deck.index('id="norway-problem"')
     norway_11_start = deck.index('id="norway-11"')
     norway_start = deck.index('id="norway"')
@@ -102,6 +103,7 @@ def test_render_writes_metrics_graph_and_fragments():
         yaml_start
         < dollar_start
         < comments_start
+        < anchors_aliases_start
         < norway_problem_start
         < norway_11_start
         < yaml_12_required_start
@@ -125,7 +127,8 @@ def test_render_writes_metrics_graph_and_fragments():
     bonus_slide = deck[bonus_start:markdown_start]
     markdown_slide = deck[markdown_start:markdown_ld_start]
     markdown_ld_slide = deck[markdown_ld_start:questions_start]
-    comments_slide = deck[comments_start:norway_problem_start]
+    comments_slide = deck[comments_start:anchors_aliases_start]
+    anchors_aliases_slide = deck[anchors_aliases_start:norway_problem_start]
     assert 'class="shout">The Norway problem</h2>' in norway_problem_slide
     assert 'class="norway-problem-stack"' in norway_problem_slide
     assert 'class="norway-flag"' in norway_problem_slide
@@ -149,12 +152,18 @@ def test_render_writes_metrics_graph_and_fragments():
     assert deck.count('class="norway-comparison"') == 2
     assert 'class="columns four implementation-grid"' in implementations_slide
     assert 'class="columns three questions-links"' in questions_slide
-    assert deck.count('class="code-info place bottom right"') == 8
+    assert deck.count('class="code-info place bottom right"') == 9
     assert "Comments are whitespace" not in deck
     assert ">Comments</h2>" in comments_slide
     comments_fragment = FRAGMENTS / "comments.yamlld.html"
     assert comments_fragment.exists()
     assert 'class="c1"' in comments_fragment.read_text(encoding="utf-8")
+    assert 'class="code-title">&amp; anchors, *aliases</h2>' in anchors_aliases_slide
+    anchors_aliases_fragment = FRAGMENTS / "context-anchors.yamlld.html"
+    assert anchors_aliases_fragment.exists()
+    anchors_aliases_markup = anchors_aliases_fragment.read_text(encoding="utf-8")
+    assert '<span class="nl anchor-alias">&amp;iri</span>' in anchors_aliases_markup
+    assert anchors_aliases_markup.count('<span class="nv anchor-alias">*iri</span>') == 2
     assert '<span class="norway-field">country:</span> NO' in norway_11_slide
     assert '<span class="norway-field">country:</span> NO' in norway_slide
     assert json.loads(NORWAY_JSONLD.read_text(encoding="utf-8"))["country"] == "NO"
