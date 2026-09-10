@@ -6,7 +6,6 @@ article.md
 .coverage
 .playwright-mcp/
 generated/
-slides/index.html
 gregg-memoriam.png
 json-subset-before.png
 projection-markdown.png
