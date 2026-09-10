@@ -129,9 +129,9 @@ def test_render_writes_metrics_graph_and_fragments():
     markdown_ld_slide = deck[markdown_ld_start:questions_start]
     comments_slide = deck[comments_start:anchors_aliases_start]
     anchors_aliases_slide = deck[anchors_aliases_start:norway_problem_start]
-    assert 'class="shout">The Norway problem</h2>' in norway_problem_slide
-    assert 'class="norway-problem-stack"' in norway_problem_slide
-    assert 'class="norway-flag"' in norway_problem_slide
+    assert "The Norway problem" not in norway_problem_slide
+    assert 'class="norway-problem-stack"' not in norway_problem_slide
+    assert 'class="norway-flag" src="images/norway-flag.svg" alt="Flag of Norway"' in norway_problem_slide
     assert "place bottom left" not in norway_problem_slide
     assert "YAML 1.1 would read" not in norway_problem_slide
     assert 'class="norway-version">YAML 1.1</p>' in norway_11_slide
