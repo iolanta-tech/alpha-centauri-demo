@@ -77,7 +77,8 @@ def highlight_markdown_with_front_matter(path: Path) -> str:
         MarkdownLexer(),
         FORMATTER,
     ).rstrip("\n")
-    inner = f"---\n{yaml_html}\n---\n\n{body_html}"
+    fence = '<span class="front-matter-separator">---</span>'
+    inner = f"{fence}\n{yaml_html}\n{fence}\n\n{body_html}"
     return f"<pre><code>{inner}\n</code></pre>\n"
 
 
