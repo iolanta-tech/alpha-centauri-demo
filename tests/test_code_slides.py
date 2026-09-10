@@ -20,6 +20,7 @@ def test_code_slides_fill_the_slide_without_scrollbars():
     assert ".slide.code-slide .code-pane::-webkit-scrollbar" in css
     assert "background: rgb(255 255 255 / 90%);" not in info_rule
     assert "background: transparent;" in info_rule
+    assert ".slide .markdown-example" not in css
 
 
 def test_dollar_title_colors_at_and_dollar_sigils():
