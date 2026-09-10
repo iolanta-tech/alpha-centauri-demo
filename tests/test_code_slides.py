@@ -23,6 +23,21 @@ def test_code_slides_fill_the_slide_without_scrollbars():
     assert ".slide .markdown-example" not in css
 
 
+def test_markdown_ld_front_matter_separators_use_green_highlight():
+    css = (SLIDES / "styles.css").read_text(encoding="utf-8")
+    start = css.index("#markdown-ld .front-matter-separator {")
+    rule = css[start:css.index("}", start)]
+    assert "display: inline-block;" in rule
+    assert "width: 100%;" in rule
+    assert "box-sizing: border-box;" in rule
+    assert "background: #e2f1e8;" in rule
+    assert "color: #137333;" in rule
+    assert "font-weight: bold;" in rule
+    code_start = css.index("#markdown-ld .code-pane code {")
+    code_rule = css[code_start:css.index("}", code_start)]
+    assert "display: block;" in code_rule
+
+
 def test_dollar_title_colors_at_and_dollar_sigils():
     css = (SLIDES / "styles.css").read_text(encoding="utf-8")
     at_start = css.index("#dollar .code-title .sigil-at {")
