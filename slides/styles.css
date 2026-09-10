@@ -321,18 +321,6 @@ aside {
     font-style: italic;
 }
 
-#markdown-ld .markdown-logo {
-    width: 36px;
-    height: 36px;
-    margin-left: 8px;
-    vertical-align: -0.16em;
-}
-
-.slide .markdown-example {
-    max-height: 300px;
-    overflow: hidden;
-}
-
 #questions .questions-links {
     min-width: 0;
 }
