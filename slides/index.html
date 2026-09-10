@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>YAML-LD: Linked Data for Humans &amp; Agents</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <link rel="stylesheet" href="shower/themes/ribbon/styles/index.css">
+    <link rel="stylesheet" href="styles.css?revision=front-matter-separator-line">
+    <style>pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.slide pre code .hll { background-color: #ffffcc }
+.slide pre code { background: #f8f8f8; }
+.slide pre code .c { color: #3D7B7B; font-style: italic } /* Comment */
+.slide pre code .err { border: 1px solid #F00 } /* Error */
+.slide pre code .k { color: #008000; font-weight: bold } /* Keyword */
+.slide pre code .o { color: #666 } /* Operator */
+.slide pre code .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.slide pre code .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.slide pre code .cp { color: #9C6500 } /* Comment.Preproc */
+.slide pre code .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.slide pre code .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.slide pre code .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.slide pre code .gd { color: #A00000 } /* Generic.Deleted */
+.slide pre code .ge { font-style: italic } /* Generic.Emph */
+.slide pre code .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.slide pre code .gr { color: #E40000 } /* Generic.Error */
+.slide pre code .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.slide pre code .gi { color: #008400 } /* Generic.Inserted */
+.slide pre code .go { color: #717171 } /* Generic.Output */
+.slide pre code .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.slide pre code .gs { font-weight: bold } /* Generic.Strong */
+.slide pre code .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.slide pre code .gt { color: #04D } /* Generic.Traceback */
+.slide pre code .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.slide pre code .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.slide pre code .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.slide pre code .kp { color: #008000 } /* Keyword.Pseudo */
+.slide pre code .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.slide pre code .kt { color: #B00040 } /* Keyword.Type */
+.slide pre code .m { color: #666 } /* Literal.Number */
+.slide pre code .s { color: #BA2121 } /* Literal.String */
+.slide pre code .na { color: #687822 } /* Name.Attribute */
+.slide pre code .nb { color: #008000 } /* Name.Builtin */
+.slide pre code .nc { color: #00F; font-weight: bold } /* Name.Class */
+.slide pre code .no { color: #800 } /* Name.Constant */
+.slide pre code .nd { color: #A2F } /* Name.Decorator */
+.slide pre code .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.slide pre code .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.slide pre code .nf { color: #00F } /* Name.Function */
+.slide pre code .nl { color: #767600 } /* Name.Label */
+.slide pre code .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.slide pre code .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.slide pre code .nv { color: #19177C } /* Name.Variable */
+.slide pre code .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.slide pre code .w { color: #BBB } /* Text.Whitespace */
+.slide pre code .mb { color: #666 } /* Literal.Number.Bin */
+.slide pre code .mf { color: #666 } /* Literal.Number.Float */
+.slide pre code .mh { color: #666 } /* Literal.Number.Hex */
+.slide pre code .mi { color: #666 } /* Literal.Number.Integer */
+.slide pre code .mo { color: #666 } /* Literal.Number.Oct */
+.slide pre code .sa { color: #BA2121 } /* Literal.String.Affix */
+.slide pre code .sb { color: #BA2121 } /* Literal.String.Backtick */
+.slide pre code .sc { color: #BA2121 } /* Literal.String.Char */
+.slide pre code .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.slide pre code .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.slide pre code .s2 { color: #BA2121 } /* Literal.String.Double */
+.slide pre code .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.slide pre code .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.slide pre code .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.slide pre code .sx { color: #008000 } /* Literal.String.Other */
+.slide pre code .sr { color: #A45A77 } /* Literal.String.Regex */
+.slide pre code .s1 { color: #BA2121 } /* Literal.String.Single */
+.slide pre code .ss { color: #19177C } /* Literal.String.Symbol */
+.slide pre code .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.slide pre code .fm { color: #00F } /* Name.Function.Magic */
+.slide pre code .vc { color: #19177C } /* Name.Variable.Class */
+.slide pre code .vg { color: #19177C } /* Name.Variable.Global */
+.slide pre code .vi { color: #19177C } /* Name.Variable.Instance */
+.slide pre code .vm { color: #19177C } /* Name.Variable.Magic */
+.slide pre code .il { color: #666 } /* Literal.Number.Integer.Long */</style>
+</head>
+<body class="shower list">
+    <header class="caption">
+        <h1>YAML-LD: Linked Data for Humans &amp; Agents</h1>
+        <p>Anatoly Scherbakov · Dataworthy · 11 Sep 2026</p>
+    </header>
+
+    
+
+    <section class="slide" id="title">
+        <h2 class="shout">YAML-LD</h2>
+        <p class="lede note title-byline">Dataworthy · 11 Sep 2026 · Anatoly Scherbakov</p>
+        <aside>0–1 min. Introduce the format; the next slide begins the demonstration.</aside>
+    </section>
+
+    <section class="slide graph-slide" id="graph-slide">
+        <div class="graph-shell">
+            <div id="graph"></div>
+            <p id="scene-note" class="scene-note"></p>
+            <aside id="scene-help" class="scene-help" aria-label="Controls"></aside>
+        </div>
+        <script id="graph-data" type="application/json">{"links": [{"direction": "http://dbpedia.org/resource/Alpha_Centauri \u2192 http://dbpedia.org/resource/Alpha_Centauri_AB", "predicate": "https://schema.org/hasPart", "predicateLabel": "schema:hasPart", "readerLabel": "contains", "source": "http://dbpedia.org/resource/Alpha_Centauri", "target": "http://dbpedia.org/resource/Alpha_Centauri_AB"}, {"direction": "http://dbpedia.org/resource/Alpha_Centauri_AB \u2192 http://dbpedia.org/resource/Alpha_Centauri_A", "predicate": "https://schema.org/hasPart", "predicateLabel": "schema:hasPart", "readerLabel": "contains", "source": "http://dbpedia.org/resource/Alpha_Centauri_AB", "target": "http://dbpedia.org/resource/Alpha_Centauri_A"}, {"direction": "http://dbpedia.org/resource/Alpha_Centauri_AB \u2192 http://dbpedia.org/resource/Alpha_Centauri_B", "predicate": "https://schema.org/hasPart", "predicateLabel": "schema:hasPart", "readerLabel": "contains", "source": "http://dbpedia.org/resource/Alpha_Centauri_AB", "target": "http://dbpedia.org/resource/Alpha_Centauri_B"}, {"direction": "http://dbpedia.org/resource/Proxima_Centauri \u2192 http://dbpedia.org/resource/Alpha_Centauri_AB", "predicate": "http://dbpedia.org/property/star", "predicateLabel": "dbp:star", "readerLabel": "orbits", "source": "http://dbpedia.org/resource/Proxima_Centauri", "target": "http://dbpedia.org/resource/Alpha_Centauri_AB"}, {"direction": "http://dbpedia.org/resource/Proxima_Centauri_b \u2192 http://dbpedia.org/resource/Proxima_Centauri", "predicate": "http://dbpedia.org/property/star", "predicateLabel": "dbp:star", "readerLabel": "orbits", "source": "http://dbpedia.org/resource/Proxima_Centauri_b", "target": "http://dbpedia.org/resource/Proxima_Centauri"}, {"direction": "http://dbpedia.org/resource/Proxima_Centauri_d \u2192 http://dbpedia.org/resource/Proxima_Centauri", "predicate": "http://dbpedia.org/property/star", "predicateLabel": "dbp:star", "readerLabel": "orbits", "source": "http://dbpedia.org/resource/Proxima_Centauri_d", "target": "http://dbpedia.org/resource/Proxima_Centauri"}], "nodes": [{"category": "system", "fx": 0, "fy": 80, "fz": 0, "id": "http://dbpedia.org/resource/Alpha_Centauri", "label": "Alpha Centauri"}, {"category": "star", "fx": -80, "fy": 5, "fz": 25, "id": "http://dbpedia.org/resource/Alpha_Centauri_A", "label": "Alpha Centauri A"}, {"category": "system", "fx": 0, "fy": 15, "fz": 0, "id": "http://dbpedia.org/resource/Alpha_Centauri_AB", "label": "Alpha Centauri AB"}, {"category": "star", "fx": 80, "fy": 5, "fz": 25, "id": "http://dbpedia.org/resource/Alpha_Centauri_B", "label": "Alpha Centauri B"}, {"category": "star", "fx": 0, "fy": -50, "fz": 0, "id": "http://dbpedia.org/resource/Proxima_Centauri", "label": "Proxima Centauri"}, {"category": "planet", "fx": -55, "fy": -100, "fz": 15, "id": "http://dbpedia.org/resource/Proxima_Centauri_b", "label": "Proxima Centauri b"}, {"category": "planet", "fx": 55, "fy": -100, "fz": 15, "id": "http://dbpedia.org/resource/Proxima_Centauri_d", "label": "Proxima Centauri d"}]}</script>
+        <aside>4–8 min. Meet the system before seeing its RDF representation. The A/B binary has a 23.5 AU semimajor axis. Proxima is currently about 13,000 AU from it. Proxima d and b orbit at 0.02881 AU and 0.04848 AU. Sources: https://www.cambridge.org/core/journals/publications-of-the-astronomical-society-of-australia/article/abs/alpha-centauri/7ED97A40788D66BF0D70B46759E6CA23 and NASA’s catalogs for https://science.nasa.gov/exoplanet-catalog/proxima-centauri-b/ and https://science.nasa.gov/exoplanet-catalog/proxima-centauri-d/.</aside>
+    </section>
+
+    <section class="slide code-slide" id="jsonld">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title">JSON-LD <img class="technology-logo jsonld-logo" src="images/logos/json-ld.svg" alt=""></h2>
+                <p class="metric">
+        <span class="bytes">1322 bytes</span>
+        
+        
+    </p>
+            </div>
+            <div class="code-pane"><pre><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"@context"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.org/"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"dbo"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://dbpedia.org/ontology/"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"dbp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://dbpedia.org/property/"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"dbr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://dbpedia.org/resource/"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"schema:name"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"schema:description"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"contains"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"schema:hasPart"</span><span class="p">,</span><span class="w"> </span><span class="nt">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@id"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">"is-orbited-by"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"@reverse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dbp:star"</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dbr:Alpha_Centauri"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Alpha Centauri"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The closest star system to the Solar System."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"contains"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dbr:Alpha_Centauri_AB"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Alpha Centauri AB"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"contains"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dbr:Alpha_Centauri_A"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dbo:Star"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Alpha Centauri A"</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dbr:Alpha_Centauri_B"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dbo:Star"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Alpha Centauri B"</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"is-orbited-by"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dbr:Proxima_Centauri"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dbo:Star"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Proxima Centauri"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"is-orbited-by"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dbr:Proxima_Centauri_b"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dbo:Planet"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Proxima Centauri b"</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">          </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dbr:Proxima_Centauri_d"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dbo:Planet"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Proxima Centauri d"</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+        </div>
+        <aside>9–11 min. This document is canonical for every later stage. It records system membership and orbital relationships.</aside>
+    </section>
+
+    <section class="slide" id="json-subset">
+        <h2 class="shout"><span class="subset-expression"><img class="technology-logo subset-logo" src="images/logos/json.svg" alt=""> JSON ⊊ YAML <img class="technology-logo subset-logo" src="images/logos/yaml.svg" alt=""></span></h2>
+    </section>
+
+    <section class="slide code-slide" id="jsonld-marked">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title">JSON-LD <img class="technology-logo jsonld-logo" src="images/logos/json-ld.svg" alt=""><br><span class="code-title-note">(and YAML-LD 😏)</span></h2>
+                <p class="metric">
+        <span class="bytes">1322 bytes</span>
+        
+        
+    </p>
+            </div>
+            <div class="code-pane"><pre><code><span class="p json-only-punctuation">{</span>
+<span class="w">  </span><span class="nt">"@context"</span><span class="p">:</span><span class="w"> </span><span class="p json-only-punctuation">{</span>
+<span class="w">    </span><span class="nt"><span class="json-only-quote">"</span>schema<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>https://schema.org/<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">    </span><span class="nt"><span class="json-only-quote">"</span>dbo<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>http://dbpedia.org/ontology/<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">    </span><span class="nt"><span class="json-only-quote">"</span>dbp<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>http://dbpedia.org/property/<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">    </span><span class="nt"><span class="json-only-quote">"</span>dbr<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>http://dbpedia.org/resource/<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">    </span><span class="nt"><span class="json-only-quote">"</span>name<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>schema:name<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">    </span><span class="nt"><span class="json-only-quote">"</span>description<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>schema:description<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">    </span><span class="nt"><span class="json-only-quote">"</span>contains<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="p json-only-punctuation">{</span><span class="w"> </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>schema:hasPart<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span><span class="w"> </span><span class="nt">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@id"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt"><span class="json-only-quote">"</span>is-orbited-by<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="p json-only-punctuation">{</span><span class="w"> </span><span class="nt">"@reverse"</span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>dbp:star<span class="json-only-quote">"</span></span><span class="w"> </span><span class="p json-only-punctuation">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>dbr:Alpha_Centauri<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">  </span><span class="nt"><span class="json-only-quote">"</span>name<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>Alpha Centauri<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">  </span><span class="nt"><span class="json-only-quote">"</span>description<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>The closest star system to the Solar System.<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">  </span><span class="nt"><span class="json-only-quote">"</span>contains<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="p json-only-punctuation">{</span>
+<span class="w">    </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>dbr:Alpha_Centauri_AB<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">    </span><span class="nt"><span class="json-only-quote">"</span>name<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>Alpha Centauri AB<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">    </span><span class="nt"><span class="json-only-quote">"</span>contains<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="p json-only-punctuation">[</span>
+<span class="w">      </span><span class="p json-only-punctuation">{</span>
+<span class="w">        </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>dbr:Alpha_Centauri_A<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">        </span><span class="nt">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>dbo:Star<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">        </span><span class="nt"><span class="json-only-quote">"</span>name<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>Alpha Centauri A<span class="json-only-quote">"</span></span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="p json-only-punctuation">{</span>
+<span class="w">        </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>dbr:Alpha_Centauri_B<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">        </span><span class="nt">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>dbo:Star<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">        </span><span class="nt"><span class="json-only-quote">"</span>name<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>Alpha Centauri B<span class="json-only-quote">"</span></span>
+<span class="w">      </span><span class="p json-only-punctuation">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt"><span class="json-only-quote">"</span>is-orbited-by<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="p json-only-punctuation">[</span>
+<span class="w">      </span><span class="p json-only-punctuation">{</span>
+<span class="w">        </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>dbr:Proxima_Centauri<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">        </span><span class="nt">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>dbo:Star<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">        </span><span class="nt"><span class="json-only-quote">"</span>name<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>Proxima Centauri<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">        </span><span class="nt"><span class="json-only-quote">"</span>is-orbited-by<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="p json-only-punctuation">[</span>
+<span class="w">          </span><span class="p json-only-punctuation">{</span>
+<span class="w">            </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>dbr:Proxima_Centauri_b<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">            </span><span class="nt">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>dbo:Planet<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">            </span><span class="nt"><span class="json-only-quote">"</span>name<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>Proxima Centauri b<span class="json-only-quote">"</span></span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">          </span><span class="p json-only-punctuation">{</span>
+<span class="w">            </span><span class="nt">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>dbr:Proxima_Centauri_d<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">            </span><span class="nt">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>dbo:Planet<span class="json-only-quote">"</span></span><span class="p json-only-punctuation">,</span>
+<span class="w">            </span><span class="nt"><span class="json-only-quote">"</span>name<span class="json-only-quote">"</span></span><span class="p">:</span><span class="w"> </span><span class="s2"><span class="json-only-quote">"</span>Proxima Centauri d<span class="json-only-quote">"</span></span>
+<span class="w">          </span><span class="p json-only-punctuation">}</span>
+<span class="w">        </span><span class="p json-only-punctuation">]</span>
+<span class="w">      </span><span class="p json-only-punctuation">}</span>
+<span class="w">    </span><span class="p json-only-punctuation">]</span>
+<span class="w">  </span><span class="p json-only-punctuation">}</span>
+<span class="p json-only-punctuation">}</span>
+</code></pre>
+</div>
+        </div>
+        <aside>12–14 min. This is the same JSON-LD document. Now point out the highlighted braces, brackets, commas, and removable quotes. @context and the colon still carry structure in YAML.</aside>
+    </section>
+
+    <section class="slide code-slide" id="yaml-plain">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title">YAML-LD <img class="technology-logo yaml-logo" src="images/logos/yaml.svg" alt=""></h2>
+                <p class="metric">
+        <span class="bytes">996 bytes</span>
+        <span class="comparison win">24.7% below JSON-LD</span>
+        <span class="comparison win">&minus;326 B</span>
+    </p>
+            </div>
+            <div class="code-pane"><pre><code><span class="s">"@context"</span><span class="p p-Indicator">:</span>
+<span class="w">  </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://schema.org/</span>
+<span class="w">  </span><span class="nt">dbo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/ontology/</span>
+<span class="w">  </span><span class="nt">dbp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/property/</span>
+<span class="w">  </span><span class="nt">dbr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/resource/</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schema:name</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schema:description</span>
+<span class="w">  </span><span class="nt">contains</span><span class="p">:</span>
+<span class="w">    </span><span class="s">"@id"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schema:hasPart</span>
+<span class="w">    </span><span class="s">"@type"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">"@id"</span>
+<span class="w">  </span><span class="nt">is-orbited-by</span><span class="p">:</span>
+<span class="w">    </span><span class="s">"@reverse"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbp:star</span>
+<span class="s">"@id"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Alpha_Centauri</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Alpha Centauri</span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">The closest star system to the Solar System.</span>
+<span class="nt">contains</span><span class="p">:</span>
+<span class="w">  </span><span class="s">"@id"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Alpha_Centauri_AB</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Alpha Centauri AB</span>
+<span class="w">  </span><span class="nt">contains</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"@id"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Alpha_Centauri_A</span>
+<span class="w">      </span><span class="s">"@type"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Star</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Alpha Centauri A</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"@id"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Alpha_Centauri_B</span>
+<span class="w">      </span><span class="s">"@type"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Star</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Alpha Centauri B</span>
+<span class="w">  </span><span class="nt">is-orbited-by</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"@id"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Proxima_Centauri</span>
+<span class="w">      </span><span class="s">"@type"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Star</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Proxima Centauri</span>
+<span class="w">      </span><span class="nt">is-orbited-by</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"@id"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Proxima_Centauri_b</span>
+<span class="w">          </span><span class="s">"@type"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Planet</span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Proxima Centauri b</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"@id"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Proxima_Centauri_d</span>
+<span class="w">          </span><span class="s">"@type"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Planet</span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Proxima Centauri d</span>
+</code></pre>
+</div>
+        </div>
+        <aside>14–16 min. The JSON-only braces, brackets, and commas have disappeared. The YAML-LD expands to the same RDF graph. Count includes the inline context.</aside>
+    </section>
+
+    <section class="slide code-slide" id="dollar">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title"><span class="sigil-at">@</span> needs to stay quoted, <span class="sigil-dollar">$</span> does not</h2>
+                <p class="metric">
+        <span class="bytes">1040 bytes</span>
+        <span class="comparison win">21.3% below JSON-LD</span>
+        <span class="comparison setback">+44 B</span>
+    </p>
+            </div>
+            <div class="code-pane"><pre><code><span class="s">"@context"</span><span class="p p-Indicator">:</span>
+<span class="w">  </span><span class="s">"@import"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain dollar-convenience">https://json-ld.org/contexts/dollar-convenience.jsonld</span>
+<span class="w">  </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://schema.org/</span>
+<span class="w">  </span><span class="nt">dbo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/ontology/</span>
+<span class="w">  </span><span class="nt">dbp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/property/</span>
+<span class="w">  </span><span class="nt">dbr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/resource/</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schema:name</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schema:description</span>
+<span class="w">  </span><span class="nt">contains</span><span class="p">:</span>
+<span class="w">    </span><span class="s">"@id"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schema:hasPart</span>
+<span class="w">    </span><span class="s">"@type"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">"@id"</span>
+<span class="w">  </span><span class="nt">is-orbited-by</span><span class="p">:</span>
+<span class="w">    </span><span class="s">"@reverse"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbp:star</span>
+<span class="nt dollar-convenience">$id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Alpha_Centauri</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Alpha Centauri</span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">The closest star system to the Solar System.</span>
+<span class="nt">contains</span><span class="p">:</span>
+<span class="w">  </span><span class="nt dollar-convenience">$id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Alpha_Centauri_AB</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Alpha Centauri AB</span>
+<span class="w">  </span><span class="nt">contains</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt dollar-convenience">$id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Alpha_Centauri_A</span>
+<span class="w">      </span><span class="nt dollar-convenience">$type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Star</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Alpha Centauri A</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt dollar-convenience">$id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Alpha_Centauri_B</span>
+<span class="w">      </span><span class="nt dollar-convenience">$type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Star</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Alpha Centauri B</span>
+<span class="w">  </span><span class="nt">is-orbited-by</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt dollar-convenience">$id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Proxima_Centauri</span>
+<span class="w">      </span><span class="nt dollar-convenience">$type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Star</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Proxima Centauri</span>
+<span class="w">      </span><span class="nt">is-orbited-by</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt dollar-convenience">$id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Proxima_Centauri_b</span>
+<span class="w">          </span><span class="nt dollar-convenience">$type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Planet</span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Proxima Centauri b</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt dollar-convenience">$id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Proxima_Centauri_d</span>
+<span class="w">          </span><span class="nt dollar-convenience">$type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Planet</span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Proxima Centauri d</span>
+</code></pre>
+</div>
+        </div>
+        <aside>16–20 min. @ must remain quoted in YAML. The imported dollar-convenience context supplies $id and $type; green marks both their uses and the context that defines them.</aside>
+    </section>
+
+    <section class="slide code-slide" id="yaml-comments">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title">Comments</h2>
+            </div>
+            <div class="code-pane"><pre><code><span class="s">"@context"</span><span class="p p-Indicator">:</span>
+<span class="w">  </span><span class="c1"># dollar-convenience supplies $id and $type, so they can stay unquoted</span>
+<span class="w">  </span><span class="s">"@import"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://json-ld.org/contexts/dollar-convenience.jsonld</span>
+<span class="w">  </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://schema.org/</span>
+<span class="w">  </span><span class="nt">dbo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/ontology/</span>
+<span class="w">  </span><span class="nt">dbp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/property/</span>
+<span class="w">  </span><span class="nt">dbr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/resource/</span>
+<span class="w">  </span><span class="c1"># name is shorthand for schema:name</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schema:name</span>
+
+<span class="w">  </span><span class="c1"># walk dbp:star backwards to the planets that orbit this star</span>
+<span class="w">  </span><span class="nt">is-orbited-by</span><span class="p">:</span>
+<span class="w">    </span><span class="s">"@reverse"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbp:star</span>
+
+<span class="c1"># red dwarf; frequent flares</span>
+<span class="nt">$id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Proxima_Centauri</span>
+<span class="nt">$type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Star</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Proxima Centauri</span>
+<span class="nt">is-orbited-by</span><span class="p">:</span>
+
+<span class="w">  </span><span class="c1"># possibly tidally locked; maybe rocky; mass similar to Earth</span>
+<span class="w">  </span><span class="c1"># Located in the star's habitable zone, so might have liquid water on the surface</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">$id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Proxima_Centauri_b</span>
+<span class="w">    </span><span class="nt">$type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Planet</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Proxima Centauri b</span>
+
+<span class="w">  </span><span class="c1"># likely rocky; more like Mercury</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">$id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Proxima_Centauri_d</span>
+<span class="w">    </span><span class="nt">$type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Planet</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Proxima Centauri d</span>
+</code></pre>
+</div>
+        </div>
+        <aside>20–21 min. JSON has no comments. YAML-LD treats # as whitespace, so the planet notes never become triples.</aside>
+    </section>
+
+    <section class="slide code-slide" id="anchors-aliases">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title">&amp; anchors, *aliases</h2>
+            </div>
+            <div class="code-pane"><pre><code><span class="s">"@context"</span><span class="p p-Indicator">:</span>
+<span class="w">  </span><span class="nt">dbo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/ontology/</span>
+<span class="w">  </span><span class="nt">dbp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/property/</span>
+<span class="w">  </span><span class="nt">dbr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/resource/</span>
+
+<span class="w">  </span><span class="c1"># &amp;iri labels this complete term definition</span>
+<span class="w">  </span><span class="nt">dbp:star</span><span class="p">:</span><span class="w">            </span><span class="nl anchor-alias">&amp;iri</span>
+<span class="w">    </span><span class="s">"@type"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">"@id"</span>
+
+<span class="w">  </span><span class="c1"># *iri reuses it for the other IRI-valued terms</span>
+<span class="w">  </span><span class="nt">dbp:discoveryMethod</span><span class="p">:</span><span class="w"> </span><span class="nv anchor-alias">*iri</span>
+<span class="w">  </span><span class="nt">dbp:discoverySite</span><span class="p">:</span><span class="w">   </span><span class="nv anchor-alias">*iri</span>
+
+<span class="s">"@id"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Proxima_Centauri_b</span>
+<span class="nt">dbp:star</span><span class="p">:</span><span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">dbr:Proxima_Centauri</span>
+<span class="nt">dbp:discoveryMethod</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Doppler_spectroscopy</span>
+<span class="nt">dbp:discoverySite</span><span class="p">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">dbr:European_Southern_Observatory</span>
+</code></pre>
+</div>
+        </div>
+        <aside>21–22 min. Anchors label a complete YAML value and aliases substitute it wherever reused. JSON-LD receives three ordinary IRI term definitions. The label iri is YAML serialization detail, not RDF data.</aside>
+    </section>
+
+    <section class="slide" id="norway-problem">
+        <img class="norway-flag" src="images/norway-flag.svg" alt="Flag of Norway">
+        <aside>22–23 min. YAML has an unquoted NO. What does a processor make of it?</aside>
+    </section>
+
+    <section class="slide" id="norway-11">
+        <p class="norway-version">YAML 1.1</p>
+        <div class="norway-comparison" aria-label="YAML 1.1 parses country NO as false">
+            <div class="norway-source"><code><span class="norway-field">country:</span> NO</code></div>
+            <span class="norway-arrow" aria-hidden="true">→</span>
+            <div class="norway-result norway-result-legacy"><code><span class="norway-field">country:</span> <strong class="norway-value">false</strong></code></div>
+        </div>
+        <aside>22–23 min. Under legacy YAML 1.1 rules, the unquoted NO value resolves to the boolean false.</aside>
+    </section>
+
+    <section class="slide" id="yaml-12-required">
+        <h2 class="shout">YAML-LD requires YAML 1.2+</h2>
+        <aside>23–24 min. YAML-LD processors must use YAML 1.2 or a later backwards-compatible specification.</aside>
+    </section>
+
+    <section class="slide" id="norway">
+        <p class="norway-version">YAML 1.2+</p>
+        <div class="norway-comparison" aria-label="YAML 1.2 parses country NO as the string NO">
+            <div class="norway-source"><code><span class="norway-field">country:</span> NO</code></div>
+            <span class="norway-arrow" aria-hidden="true">→</span>
+            <div class="norway-result norway-result-current"><code><span class="norway-field">country:</span> <strong class="norway-value">&quot;NO&quot;</strong></code></div>
+        </div>
+        <aside>24–25 min. YAML 1.2 Core Schema keeps the JSON-LD value as the string “NO”. The same legacy problem affects yes, no, on, and off.</aside>
+    </section>
+
+    <section class="slide code-slide" id="mapping-keys">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title">Keys are strings</h2>
+            </div>
+            <p class="mapping-key-error rubber-stamp place">mapping-key-error</p>
+            <div class="code-pane"><pre><code><span class="s">"@context"</span><span class="p p-Indicator">:</span>
+<span class="w">  </span><span class="nt">dbp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/property/</span>
+<span class="w">  </span><span class="nt">dbr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/resource/</span>
+<span class="w">  </span><span class="nt">xsd</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://www.w3.org/2001/XMLSchema#</span>
+<span class="w">  </span><span class="nt">dbp:discovered</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="w"> </span><span class="s">"@type"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">xsd</span><span class="p p-Indicator">:</span><span class="nv">date</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">dbp:star</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="w"> </span><span class="s">"@type"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">"@id"</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="nt">dbp:discoverer</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="w"> </span><span class="s">"@type"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">"@id"</span><span class="w"> </span><span class="p p-Indicator">}</span>
+
+<span class="mapping-key"><span class="p p-Indicator">?</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="w"> </span><span class="s">"@id"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">dbr</span><span class="p p-Indicator">:</span><span class="nv">Proxima_Centauri_b</span><span class="p p-Indicator">,</span></span>
+<span class="mapping-key"><span class="w">    </span><span class="nv">dbp</span><span class="p p-Indicator">:</span><span class="nt">star</span><span class="p">:</span><span class="w"> </span><span class="nv">dbr</span><span class="p p-Indicator">:</span><span class="nv">Proxima_Centauri</span><span class="w"> </span><span class="p p-Indicator">}</span></span>
+<span class="p p-Indicator">:</span>
+<span class="w">  </span><span class="nt">dbp:discovered</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2016-08-24</span>
+<span class="w">  </span><span class="nt">dbp:discoverer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Guillem_Anglada-Escudé</span>
+</code></pre>
+</div>
+        </div>
+        <aside>25–26 min. YAML accepts this triple-shaped object as a complex mapping key. YAML-LD rejects it: JSON-LD property names are strings, which may expand to RDF predicate terms. Proxima b’s discovery was announced by the team led by Guillem Anglada-Escudé in 2016. Source: https://science.nasa.gov/universe/exoplanets/eso-discovers-earth-size-planet-in-habitable-zone-of-nearest-star/.</aside>
+    </section>
+
+    <section class="slide" id="yaml-ld-specification">
+        <h2>YAML-LD 1.0</h2>
+        <div class="specification-reference">
+            <div class="specification-status-card">
+                <img class="technology-logo w3c-logo" src="images/logos/w3c.svg" alt="W3C">
+                <p class="specification-status-label">W3C Working Draft</p>
+                <p class="specification-status-detail">Recommendation track</p>
+            </div>
+        </div>
+        <aside>26–28 min. YAML-LD 1.0 is a Working Draft on the W3C Recommendation track, published by the JSON-LD Working Group. Source: https://www.w3.org/TR/yaml-ld/.</aside>
+    </section>
+
+    <section class="slide" id="implementations">
+        <h2>Where implementations stand</h2>
+        <div class="columns four implementation-grid">
+            <article class="implementation implementation-supported">
+                <img class="technology-logo implementation-logo" src="images/logos/rust.svg" alt="">
+                <h3><a href="https://github.com/pchampin/sophia-cli">Sophia / <code>sop</code></a></h3>
+                <p class="implementation-role">CLI</p>
+                <p class="implementation-status">Supported</p>
+            </article>
+            <article class="implementation implementation-export">
+                <img class="technology-logo implementation-logo" src="images/logos/javascript.svg" alt="">
+                <h3><a href="https://json-ld.org/playground/">json-ld.org Playground</a></h3>
+                <p class="implementation-role">Browser</p>
+                <p class="implementation-status">Export only</p>
+            </article>
+            <article class="implementation implementation-supported">
+                <img class="technology-logo implementation-logo" src="images/logos/rust.svg" alt="">
+                <h3><a href="https://github.com/iolanta-tech/sparqld">sparqld</a></h3>
+                <p class="implementation-role">Loader</p>
+                <p class="implementation-status">Supported</p>
+            </article>
+            <article class="implementation implementation-progress">
+                <img class="technology-logo implementation-logo" src="images/logos/python.svg" alt="">
+                <h3><a href="https://github.com/digitalbazaar/pyld">PyLD</a></h3>
+                <p class="implementation-role">Python</p>
+                <p class="implementation-status">In progress</p>
+            </article>
+        </div>
+        <aside>39–43 min. Sophia and sparqld use Rust. PyLD is Python. The json-ld.org Playground produces YAML-LD by serializing its JSON-LD document with YAML.stringify. Its status is export only, not YAML-LD input processing by jsonld.js itself.</aside>
+    </section>
+
+    <section class="slide black clear memoriam-slide" id="memoriam">
+        <div class="memoriam-copy">
+            <h2>In memoriam</h2>
+            <p class="memoriam-name">Gregg Kellogg</p>
+            <p class="memoriam-years">6 September 2025</p>
+            <p class="lede">A central figure in JSON-LD for more than a decade.</p>
+            <p>Among many other contributions to open standards and open software, Gregg initiated and inspired YAML-LD development.</p>
+        </div>
+        <figure class="memoriam-portrait">
+            <img src="images/gregg-kellogg.jpg" alt="Portrait of Gregg Kellogg">
+        </figure>
+        <aside>Do not rush this slide. Passing date: https://www.wikidata.org/wiki/Q108379697. Portrait source: https://greggkellogg.net/foaf, retrieved 2026-09-07.</aside>
+    </section>
+
+    <section class="slide" id="acknowledgements">
+        <h2>Acknowledgements</h2>
+        <div class="columns four acknowledgement-grid">
+            <article class="acknowledgement">
+                <img src="images/acknowledgements/pierre-antoine-champin.png" alt="">
+                <h3><a href="https://champin.net/">Pierre-Antoine Champin</a></h3>
+            </article>
+            <article class="acknowledgement">
+                <img src="images/acknowledgements/roberto-polli.jpg" alt="">
+                <h3><a href="https://github.com/ioggstream">Roberto Polli</a></h3>
+            </article>
+            <article class="acknowledgement">
+                <img src="images/acknowledgements/ted-thibodeau.png" alt="">
+                <h3><a href="https://github.com/TallTed">Ted Thibodeau Jr</a></h3>
+            </article>
+            <article class="acknowledgement">
+                <img src="images/acknowledgements/benjamin-young.jpg" alt="">
+                <h3><a href="https://bigbluehat.com/">Benjamin Young</a></h3>
+            </article>
+        </div>
+        <aside>JSON-LD Working Group contributors to YAML-LD. Avatars from GitHub, retrieved 2026-09-10. Source: yaml-ld git history and https://www.w3.org/TR/yaml-ld/ Acknowledgements.</aside>
+    </section>
+
+    <section class="slide" id="bonus">
+        <h2 class="shout">Bonus</h2>
+        <aside>43–44 min. Extra material after the main thread.</aside>
+    </section>
+
+    <section class="slide code-slide" id="markdown">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title">Markdown <img class="technology-logo markdown-logo" src="images/logos/markdown.svg" alt=""></h2>
+            </div>
+            <div class="code-pane"><pre><code><span class="gh"># Proxima Centauri</span>
+
+A red dwarf with frequent flares.
+
+<span class="gu">## Proxima Centauri b</span>
+
+Possibly tidally locked; maybe rocky; mass similar to Earth.
+
+Located in the star's habitable zone, so might have liquid water on the surface.
+
+<span class="gu">## Proxima Centauri d</span>
+
+Likely rocky; more like Mercury.
+</code></pre>
+</div>
+        </div>
+        <aside>44–45 min. Ordinary Markdown: headings and paragraphs for people, not for the graph.</aside>
+    </section>
+
+    <section class="slide code-slide" id="markdown-ld">
+        <div class="code-frame">
+            <div class="code-info place bottom right">
+                <h2 class="code-title">Markdown-LD <img class="technology-logo markdown-logo" src="images/logos/markdown.svg" alt=""></h2>
+            </div>
+            <div class="code-pane"><pre><code><span class="front-matter-separator">---</span>
+<span class="s">"@context"</span><span class="p p-Indicator">:</span>
+<span class="w">  </span><span class="s">"@import"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://json-ld.org/contexts/dollar-convenience.jsonld</span>
+<span class="w">  </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://schema.org/</span>
+<span class="w">  </span><span class="nt">dbo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/ontology/</span>
+<span class="w">  </span><span class="nt">dbp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/property/</span>
+<span class="w">  </span><span class="nt">dbr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://dbpedia.org/resource/</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schema:name</span>
+
+<span class="w">  </span><span class="nt">is-orbited-by</span><span class="p">:</span>
+<span class="w">    </span><span class="s">"@reverse"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbp:star</span>
+
+<span class="nt">$id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Proxima_Centauri</span>
+<span class="nt">$type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Star</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Proxima Centauri</span>
+<span class="nt">is-orbited-by</span><span class="p">:</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">$id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Proxima_Centauri_b</span>
+<span class="w">    </span><span class="nt">$type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Planet</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Proxima Centauri b</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">$id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbr:Proxima_Centauri_d</span>
+<span class="w">    </span><span class="nt">$type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dbo:Planet</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Proxima Centauri d</span>
+<span class="front-matter-separator">---</span>
+
+<span class="gh"># Proxima Centauri</span>
+
+A red dwarf with frequent flares.
+
+<span class="gu">## Proxima Centauri b</span>
+
+Possibly tidally locked; maybe rocky; mass similar to Earth.
+
+Located in the star's habitable zone, so might have liquid water on the surface.
+
+<span class="gu">## Proxima Centauri d</span>
+
+Likely rocky; more like Mercury.
+</code></pre>
+</div>
+        </div>
+        <aside>45–47 min. YAML-LD front matter carries the graph. The Markdown body is the same kind of unstructured text the Comments slide put in # notes, and it does not become triples.</aside>
+    </section>
+
+    <section class="slide" id="questions">
+        <h2>Questions?</h2>
+        <div class="columns three questions-links">
+            <a class="questions-link" href="https://www.w3.org/groups/wg/json-ld/">
+                <img src="images/qr/json-ld-working-group.svg" alt="QR code for the JSON-LD Working Group">
+                <span class="questions-link-copy">
+                    <span class="questions-link-heading">
+                        <img class="questions-organization-logo" src="images/logos/w3c.svg" alt="W3C">
+                        <strong>JSON-LD Working Group</strong>
+                    </span>
+                    <code>w3.org/groups/wg/json-ld</code>
+                </span>
+            </a>
+            <a class="questions-link" href="https://www.w3.org/TR/yaml-ld/">
+                <img src="images/qr/yaml-ld-specification.svg" alt="QR code for the current YAML-LD 1.0 report">
+                <span class="questions-link-copy">
+                    <span class="questions-link-heading">
+                        <img class="questions-organization-logo" src="images/logos/w3c.svg" alt="W3C">
+                        <strong>YAML-LD 1.0</strong>
+                    </span>
+                    <code>w3.org/TR/yaml-ld/</code>
+                </span>
+            </a>
+            <a class="questions-link" href="https://github.com/w3c/yaml-ld">
+                <img src="images/qr/yaml-ld-repository.svg" alt="QR code for the YAML-LD GitHub repository">
+                <span class="questions-link-copy">
+                    <span class="questions-link-heading">
+                        <img class="questions-organization-logo" src="images/logos/github.svg" alt="GitHub">
+                        <strong>GitHub</strong>
+                    </span>
+                    <code>github.com/w3c/yaml-ld</code>
+                </span>
+            </a>
+        </div>
+        <aside>Questions? The QR codes open the JSON-LD Working Group, the YAML-LD 1.0 Working Draft, and the YAML-LD specification repository.</aside>
+    </section>
+
+    <div class="progress"></div>
+    <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+    <script src="shower/shower.js"></script>
+    <script type="module" src="talk.js"></script>
+</body>
+</html>
