@@ -82,7 +82,10 @@ def test_render_writes_metrics_graph_and_fragments():
     yaml_12_required_start = deck.index('id="yaml-12-required"')
     specification_start = deck.index('id="yaml-ld-specification"')
     mapping_keys_start = deck.index('id="mapping-keys"')
-    markdown_start = deck.index('id="markdown-ld"')
+    markdown_start = deck.index('id="markdown"')
+    markdown_ld_start = deck.index('id="markdown-ld"')
+    memoriam_start = deck.index('id="memoriam"')
+    bonus_start = deck.index('id="bonus"')
     assert "id=\"unicode\"" not in deck
     assert "Unicode shenanigans" not in deck
     assert "04-unicode.yamlld" not in deck
@@ -96,14 +99,22 @@ def test_render_writes_metrics_graph_and_fragments():
         < norway_start
         < mapping_keys_start
         < specification_start
+        < implementations_start
+        < memoriam_start
+        < bonus_start
         < markdown_start
+        < markdown_ld_start
+        < questions_start
     )
     norway_problem_slide = deck[norway_problem_start:norway_11_start]
     norway_11_slide = deck[norway_11_start:yaml_12_required_start]
     yaml_12_slide = deck[yaml_12_required_start:norway_start]
     norway_slide = deck[norway_start:mapping_keys_start]
     mapping_slide = deck[mapping_keys_start:specification_start]
-    specification_slide = deck[specification_start:markdown_start]
+    specification_slide = deck[specification_start:implementations_start]
+    bonus_slide = deck[bonus_start:markdown_start]
+    markdown_slide = deck[markdown_start:markdown_ld_start]
+    markdown_ld_slide = deck[markdown_ld_start:questions_start]
     comments_slide = deck[comments_start:norway_problem_start]
     assert 'class="shout">The Norway problem</h2>' in norway_problem_slide
     assert 'class="norway-problem-stack"' in norway_problem_slide
@@ -125,7 +136,7 @@ def test_render_writes_metrics_graph_and_fragments():
     assert deck.count('class="columns two norway-pair"') == 2
     assert 'class="columns four implementation-grid"' in implementations_slide
     assert 'class="columns two questions-links"' in questions_slide
-    assert deck.count('class="code-info place bottom right"') == 6
+    assert deck.count('class="code-info place bottom right"') == 8
     assert "Comments are whitespace" not in deck
     assert ">Comments</h2>" in comments_slide
     comments_fragment = FRAGMENTS / "comments.yamlld.html"
@@ -139,6 +150,19 @@ def test_render_writes_metrics_graph_and_fragments():
         assert (FRAGMENTS / f"{name}.html").exists()
     assert "mapping-key-error" in mapping_slide
     assert "Guillem_Anglada-Escudé" in mapping_slide
+    assert 'class="slide code-slide" id="markdown"' in deck
+    assert 'class="code-title">Markdown ' in markdown_slide
+    assert "Proxima Centauri" in markdown_slide
+    assert "$id" not in markdown_slide
+    assert "markdown-example" not in markdown_slide
+    assert 'class="shout">Bonus</h2>' in bonus_slide
+    assert 'class="slide code-slide" id="markdown-ld"' in deck
+    assert 'class="code-title">Markdown-LD ' in markdown_ld_slide
+    assert "$id" in markdown_ld_slide
+    assert "markdown-example" not in markdown_ld_slide
+    assert '<p class="lede">YAML-LD front matter carries the graph' not in markdown_ld_slide
+    for name in ("proxima.md", "markdown-ld.md"):
+        assert (FRAGMENTS / f"{name}.html").exists(), name
     dollar_slide = deck[dollar_start:comments_start]
     assert '<span class="sigil-at">@</span> needs to stay quoted, <span class="sigil-dollar">$</span> does not' in dollar_slide
     assert dollar_slide.count("dollar-convenience") >= 2
