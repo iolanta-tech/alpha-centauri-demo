@@ -232,45 +232,73 @@ aside {
 #norway-11,
 #norway {
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
-#norway-11 .norway-pair,
-#norway .norway-pair {
-    min-width: 0;
+#norway-11 .norway-version,
+#norway .norway-version {
+    margin: 0 0 34px;
+    color: #6a7078;
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
-#norway-11 .norway-panel,
-#norway .norway-panel {
-    min-width: 0;
-    padding: 14px 18px;
-    background: #f8f8f8;
-}
-
-#norway-11 .norway-code,
-#norway .norway-code {
-    overflow: hidden;
+.norway-comparison {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 34px;
+    width: 100%;
     color: #202b3c;
-    font-size: 13px;
-    line-height: 1.35;
-}
-
-#norway-11 .norway-code pre,
-#norway .norway-code pre {
-    margin: 0;
     font-family: "PT Mono", "DejaVu Sans Mono", monospace;
 }
 
-#norway-11 .norway-code pre code,
-#norway .norway-code pre code {
-    width: auto;
-    margin-left: 0;
-    padding: 0;
+.norway-source,
+.norway-result {
+    padding: 28px 34px;
+    border: 2px solid #c9cdd2;
+    background: #f8f8f8;
 }
 
-#norway-11 .norway-legacy .kc {
+.norway-source {
+    color: #49515d;
+    font-size: 34px;
+}
+
+.norway-arrow {
+    color: #6a7078;
+    font-family: "PT Sans", "DejaVu Sans", sans-serif;
+    font-size: 58px;
+    line-height: 1;
+}
+
+.norway-result {
+    font-size: 42px;
+}
+
+.norway-field {
+    color: #49515d;
+    font-weight: normal;
+}
+
+.norway-value {
+    font-size: 1.55em;
+}
+
+.norway-result-legacy {
+    border-color: #b42318;
+    background: #fff8f7;
     color: #b42318;
-    font-weight: bold;
+}
+
+.norway-result-current {
+    border-color: #2f6f9f;
+    background: #f7fbff;
+    color: #2f6f9f;
 }
 
 .rubber-stamp {
@@ -298,11 +326,6 @@ aside {
     outline-color: #2f6f9f;
     background: rgb(247 251 255 / 94%);
     color: #2f6f9f;
-}
-
-#norway-11 .rubber-stamp,
-#norway .rubber-stamp {
-    top: 82%;
 }
 
 #mapping-keys .mapping-key {
