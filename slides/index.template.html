@@ -115,14 +115,11 @@
     </section>
 
     <section class="slide" id="norway-11">
-        <p class="rubber-stamp place">YAML 1.1</p>
-        <div class="columns two norway-pair">
-            <div class="norway-panel">
-                <div class="norway-code">{{ fragments['norway.yamlld'] | safe }}</div>
-            </div>
-            <div class="norway-panel">
-                <div class="norway-code norway-legacy">{{ fragments['norway-yaml-1.1.jsonld'] | safe }}</div>
-            </div>
+        <p class="norway-version">YAML 1.1</p>
+        <div class="norway-comparison" aria-label="YAML 1.1 parses country NO as false">
+            <div class="norway-source"><code><span class="norway-field">country:</span> NO</code></div>
+            <span class="norway-arrow" aria-hidden="true">→</span>
+            <div class="norway-result norway-result-legacy"><code><span class="norway-field">country:</span> <strong class="norway-value">false</strong></code></div>
         </div>
         <aside>22–23 min. Under legacy YAML 1.1 rules, the unquoted NO value resolves to the boolean false.</aside>
     </section>
@@ -133,14 +130,11 @@
     </section>
 
     <section class="slide" id="norway">
-        <p class="rubber-stamp rubber-stamp-ok place">YAML 1.2+</p>
-        <div class="columns two norway-pair">
-            <div class="norway-panel">
-                <div class="norway-code">{{ fragments['norway.yamlld'] | safe }}</div>
-            </div>
-            <div class="norway-panel">
-                <div class="norway-code">{{ fragments['norway.jsonld'] | safe }}</div>
-            </div>
+        <p class="norway-version">YAML 1.2+</p>
+        <div class="norway-comparison" aria-label="YAML 1.2 parses country NO as the string NO">
+            <div class="norway-source"><code><span class="norway-field">country:</span> NO</code></div>
+            <span class="norway-arrow" aria-hidden="true">→</span>
+            <div class="norway-result norway-result-current"><code><span class="norway-field">country:</span> <strong class="norway-value">&quot;NO&quot;</strong></code></div>
         </div>
         <aside>24–25 min. YAML 1.2 Core Schema keeps the JSON-LD value as the string “NO”. The same legacy problem affects yes, no, on, and off.</aside>
     </section>
