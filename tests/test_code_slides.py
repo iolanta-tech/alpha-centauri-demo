@@ -48,19 +48,18 @@ def test_dollar_title_colors_at_and_dollar_sigils():
     assert "color: #137333;" in dollar_rule
 
 
-def test_norway_problem_flag_sits_centered_under_the_shout():
+def test_norway_problem_flag_is_a_centered_local_image():
     css = (SLIDES / "styles.css").read_text(encoding="utf-8")
-    stack_start = css.index("#norway-problem .norway-problem-stack {")
-    stack_rule = css[stack_start:css.index("}", stack_start)]
-    shout_start = css.index("#norway-problem .shout {")
-    shout_rule = css[shout_start:css.index("}", shout_start)]
     flag_start = css.index("#norway-problem .norway-flag {")
     flag_rule = css[flag_start:css.index("}", flag_start)]
-    assert "flex-direction: column;" in stack_rule
-    assert "align-items: center;" in stack_rule
-    assert "position: static;" in shout_rule
-    assert "width: 240px;" in flag_rule
-    assert "margin: 0 0 28px 38px;" not in flag_rule
+    assert "display: flex;" in css[css.index("#norway-problem {"):css.index("}", css.index("#norway-problem {"))]
+    assert "align-items: center;" in css[css.index("#norway-problem {"):css.index("}", css.index("#norway-problem {"))]
+    assert "justify-content: center;" in css[css.index("#norway-problem {"):css.index("}", css.index("#norway-problem {"))]
+    assert "display: block;" in flag_rule
+    assert "width: 528px;" in flag_rule
+    assert "height: auto;" in flag_rule
+    assert ".norway-problem-stack" not in css
+    assert "linear-gradient" not in flag_rule
 
 
 def test_norway_comparison_prioritizes_the_parsed_value():
